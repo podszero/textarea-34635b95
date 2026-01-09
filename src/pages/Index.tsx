@@ -60,7 +60,7 @@ const Index = () => {
       className="min-h-screen bg-editor-bg"
     >
       {/* Main Content */}
-      <main className="max-w-3xl mx-auto">
+      <main>
         {isPreview ? (
           <MarkdownPreview content={content} />
         ) : (

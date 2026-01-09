@@ -14,7 +14,7 @@ const StatusBar = ({ content, isPreview }: StatusBarProps) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: 0.3 }}
-      className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-40 flex items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground font-sans safe-bottom"
+      className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-50 flex items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground font-sans safe-bottom bg-background/80 backdrop-blur-sm px-3 py-1.5 rounded-full"
     >
       <span>{words} kata</span>
       <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />

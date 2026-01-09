@@ -266,91 +266,85 @@
     @apply italic;
   }
 
-  /* Live Editor Styles */
-  .live-editor-overlay {
+  /* Live Editor - Overlay approach */
+  .live-highlight,
+  .live-textarea {
     font-family: 'Lora', Georgia, serif;
-    color: hsl(var(--editor-text));
+    font-size: 1.125rem;
     line-height: 1.8;
     letter-spacing: 0.01em;
-    white-space: pre-wrap;
-    word-wrap: break-word;
   }
 
-  .live-editor-input {
-    font-family: 'Lora', Georgia, serif;
-    background: hsl(var(--editor-bg));
+  .live-highlight {
+    color: hsl(var(--editor-text));
+  }
+
+  .live-textarea {
+    background: transparent;
     color: transparent;
     caret-color: hsl(var(--editor-cursor));
-    line-height: 1.8;
-    letter-spacing: 0.01em;
     -webkit-tap-highlight-color: transparent;
     -webkit-text-size-adjust: 100%;
   }
 
-  .live-editor-input::selection {
+  .live-textarea::selection {
     background: hsl(var(--editor-selection));
-    color: transparent;
   }
 
-  .live-editor-content {
-    pointer-events: none;
+  /* Markdown syntax - dimmed */
+  .md-syntax {
+    opacity: 0.4;
   }
 
-  .live-h1 {
-    @apply text-2xl sm:text-3xl md:text-4xl;
-    font-family: 'Inter', system-ui, sans-serif;
+  /* Placeholder */
+  .md-placeholder {
+    color: hsl(var(--editor-placeholder));
+    font-style: italic;
   }
 
-  .live-h2 {
-    @apply text-xl sm:text-2xl md:text-3xl;
-    font-family: 'Inter', system-ui, sans-serif;
+  /* Headings - bold text only, same size */
+  .md-h1, .md-h2 {
+    font-weight: 700;
   }
 
-  .live-h3 {
-    @apply text-lg sm:text-xl md:text-2xl;
-    font-family: 'Inter', system-ui, sans-serif;
+  .md-h3, .md-h4, .md-h5, .md-h6 {
+    font-weight: 600;
   }
 
-  .live-h4 {
-    @apply text-base sm:text-lg md:text-xl font-semibold;
-    font-family: 'Inter', system-ui, sans-serif;
-  }
-
-  .live-h5 {
-    @apply text-sm sm:text-base md:text-lg font-semibold;
-    font-family: 'Inter', system-ui, sans-serif;
-  }
-
-  .live-h6 {
-    @apply text-xs sm:text-sm md:text-base font-semibold;
-    font-family: 'Inter', system-ui, sans-serif;
-  }
-
-  .live-line {
-    @apply text-base sm:text-lg md:text-xl;
-  }
-
-  .live-code-marker {
+  /* Inline code */
+  .md-inline-code {
     font-family: 'SF Mono', Monaco, 'Consolas', monospace;
-    @apply text-sm sm:text-base;
+    font-size: 0.95em;
+    background: hsl(var(--muted) / 0.4);
+    padding: 0.1em 0.2em;
+    border-radius: 3px;
   }
 
-  .live-code-line {
+  /* Code fence */
+  .md-code-fence {
+    color: hsl(var(--primary) / 0.7);
     font-family: 'SF Mono', Monaco, 'Consolas', monospace;
-    @apply text-sm sm:text-base pl-4;
-    background: hsl(var(--muted) / 0.3);
+    font-size: 0.95em;
   }
 
-  .live-inline-code {
+  /* Code content */
+  .md-code-content {
     font-family: 'SF Mono', Monaco, 'Consolas', monospace;
-    @apply text-sm sm:text-base px-1 rounded;
-    background: hsl(var(--muted) / 0.5);
+    font-size: 0.95em;
+    color: hsl(var(--editor-text) / 0.9);
   }
 
-  /* Mobile adjustments for live editor */
+  /* Link */
+  .md-link {
+    color: hsl(var(--primary));
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  /* Mobile */
   @media (max-width: 640px) {
-    .live-editor-input,
-    .live-editor-overlay {
+    .live-highlight,
+    .live-textarea {
       font-size: 16px !important;
       line-height: 1.7;
     }
