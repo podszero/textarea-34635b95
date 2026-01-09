@@ -1,0 +1,16 @@
+{
+  "name": "Catatan",
+  "short_name": "Catatan",
+  "description": "Editor teks minimalis yang menyimpan semua di URL",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fdfbf7",
+  "theme_color": "#d97706",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ]
+}
