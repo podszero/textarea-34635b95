@@ -292,14 +292,21 @@
     -webkit-text-size-adjust: 100%;
   }
 
+  /* Selection styling - ensure visible selection on overlay text */
   .live-textarea::selection {
     background: hsl(var(--editor-selection));
   }
 
-  /* Markdown syntax - dimmed orange/amber */
+  .live-highlight ::selection {
+    background: hsl(var(--editor-selection));
+    color: hsl(var(--foreground));
+  }
+
+  /* Markdown syntax - dimmed amber */
   .md-syntax {
     color: hsl(var(--primary));
-    opacity: 0.5;
+    opacity: 0.45;
+    font-weight: normal;
   }
 
   /* Placeholder */
@@ -308,36 +315,79 @@
     font-style: italic;
   }
 
-  /* Headings - bold text, same font size */
-  .md-h1, .md-h2 {
+  /* Headings - different sizes like real markdown preview */
+  .md-h1 {
+    font-size: 2em;
     font-weight: 700;
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.3;
   }
 
-  .md-h3, .md-h4, .md-h5, .md-h6 {
+  .md-h2 {
+    font-size: 1.65em;
+    font-weight: 700;
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.35;
+  }
+
+  .md-h3 {
+    font-size: 1.4em;
     font-weight: 600;
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.4;
+  }
+
+  .md-h4 {
+    font-size: 1.2em;
+    font-weight: 600;
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.45;
+  }
+
+  .md-h5 {
+    font-size: 1.05em;
+    font-weight: 600;
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.5;
+  }
+
+  .md-h6 {
+    font-size: 0.95em;
+    font-weight: 600;
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.5;
+    opacity: 0.85;
+  }
+
+  /* Heading lines - display block for proper line height */
+  .md-heading-line {
+    display: block;
   }
 
   /* Bold */
   .md-bold strong {
     font-weight: 700;
+    color: hsl(var(--editor-text));
   }
 
   /* Italic */
   .md-italic em {
     font-style: italic;
+    color: hsl(var(--editor-text));
   }
 
   /* Strikethrough */
   .md-strike del {
     text-decoration: line-through;
+    color: hsl(var(--muted-foreground));
   }
 
   /* Inline code */
   .md-inline-code {
     font-family: 'SF Mono', Monaco, 'Consolas', monospace;
-    font-size: 0.9em;
-    background: hsl(var(--muted) / 0.5);
-    padding: 0.15em 0.4em;
+    font-size: 0.875em;
+    background: hsl(var(--muted) / 0.6);
+    padding: 0.2em 0.45em;
     border-radius: 4px;
     margin: 0 0.1em;
   }
@@ -349,19 +399,26 @@
   /* Code fence */
   .md-code-fence {
     font-family: 'SF Mono', Monaco, 'Consolas', monospace;
-    font-size: 0.9em;
+    font-size: 0.875em;
+    display: block;
+    color: hsl(var(--muted-foreground));
   }
 
   .md-code-lang {
     color: hsl(var(--primary));
+    margin-left: 0.25em;
   }
 
   /* Code content */
   .md-code-content {
     font-family: 'SF Mono', Monaco, 'Consolas', monospace;
-    font-size: 0.9em;
+    font-size: 0.875em;
     color: hsl(var(--editor-text));
-    padding-left: 0.5rem;
+    display: block;
+    padding-left: 1rem;
+    background: hsl(var(--muted) / 0.3);
+    margin: 0 -1rem;
+    padding-right: 1rem;
   }
 
   /* Link */
@@ -370,10 +427,11 @@
     text-decoration: underline;
     text-underline-offset: 3px;
     pointer-events: auto;
+    text-decoration-color: hsl(var(--primary) / 0.5);
   }
 
   .md-link:hover {
-    opacity: 0.8;
+    text-decoration-color: hsl(var(--primary));
   }
 
   /* Mobile */
@@ -382,6 +440,18 @@
     .live-textarea {
       font-size: 16px !important;
       line-height: 1.75;
+    }
+
+    .md-h1 {
+      font-size: 1.75em;
+    }
+
+    .md-h2 {
+      font-size: 1.45em;
+    }
+
+    .md-h3 {
+      font-size: 1.25em;
     }
   }
 }
