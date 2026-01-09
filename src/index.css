@@ -266,8 +266,36 @@
   .markdown-preview {
     font-family: 'Lora', Georgia, serif;
     color: hsl(var(--editor-text));
-    line-height: 1.9;
+    line-height: 1.8;
     width: 100%;
+    font-size: 1rem;
+  }
+
+  /* Responsive font sizes for preview */
+  @media (min-width: 480px) {
+    .markdown-preview {
+      font-size: 1.0625rem;
+    }
+  }
+
+  @media (min-width: 640px) {
+    .markdown-preview {
+      font-size: 1.125rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .markdown-preview {
+      font-size: 1.1875rem;
+      line-height: 1.85;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .markdown-preview {
+      font-size: 1.25rem;
+      line-height: 1.9;
+    }
   }
 
   .markdown-preview > *:first-child {
@@ -276,12 +304,18 @@
 
   /* Heading 1 - Hero style */
   .markdown-preview h1 {
-    @apply text-3xl sm:text-4xl md:text-5xl font-bold mb-8 mt-14 pb-4;
+    @apply text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold mb-6 sm:mb-8 mt-10 sm:mt-14 pb-3 sm:pb-4;
     font-family: 'Inter', system-ui, sans-serif;
     color: hsl(var(--foreground));
-    border-bottom: 3px solid hsl(var(--primary) / 0.4);
+    border-bottom: 2px solid hsl(var(--primary) / 0.4);
     letter-spacing: -0.03em;
     line-height: 1.2;
+  }
+
+  @media (min-width: 640px) {
+    .markdown-preview h1 {
+      border-bottom-width: 3px;
+    }
   }
 
   .markdown-preview h1:first-child {
@@ -290,17 +324,23 @@
 
   /* Heading 2 - Section style */
   .markdown-preview h2 {
-    @apply text-2xl sm:text-3xl font-bold mb-5 mt-12 pb-3;
+    @apply text-xl xs:text-2xl sm:text-3xl font-bold mb-4 sm:mb-5 mt-8 sm:mt-12 pb-2 sm:pb-3;
     font-family: 'Inter', system-ui, sans-serif;
     color: hsl(var(--foreground));
-    border-bottom: 2px solid hsl(var(--border) / 0.6);
+    border-bottom: 1px solid hsl(var(--border) / 0.6);
     letter-spacing: -0.02em;
     line-height: 1.25;
   }
 
+  @media (min-width: 640px) {
+    .markdown-preview h2 {
+      border-bottom-width: 2px;
+    }
+  }
+
   /* Heading 3 - Subsection style */
   .markdown-preview h3 {
-    @apply text-xl sm:text-2xl font-semibold mb-4 mt-10;
+    @apply text-lg xs:text-xl sm:text-2xl font-semibold mb-3 sm:mb-4 mt-6 sm:mt-10;
     font-family: 'Inter', system-ui, sans-serif;
     color: hsl(var(--foreground));
     letter-spacing: -0.01em;
@@ -309,7 +349,7 @@
 
   /* Heading 4 */
   .markdown-preview h4 {
-    @apply text-lg sm:text-xl font-semibold mb-3 mt-8;
+    @apply text-base xs:text-lg sm:text-xl font-semibold mb-2 sm:mb-3 mt-5 sm:mt-8;
     font-family: 'Inter', system-ui, sans-serif;
     color: hsl(var(--foreground) / 0.95);
     line-height: 1.35;
@@ -317,7 +357,7 @@
 
   /* Heading 5 */
   .markdown-preview h5 {
-    @apply text-base sm:text-lg font-semibold mb-3 mt-6;
+    @apply text-sm xs:text-base sm:text-lg font-semibold mb-2 sm:mb-3 mt-4 sm:mt-6;
     font-family: 'Inter', system-ui, sans-serif;
     color: hsl(var(--foreground) / 0.9);
     line-height: 1.4;
@@ -325,7 +365,7 @@
 
   /* Heading 6 - Label style */
   .markdown-preview h6 {
-    @apply text-xs sm:text-sm font-bold mb-3 mt-6 uppercase;
+    @apply text-xs sm:text-sm font-bold mb-2 sm:mb-3 mt-4 sm:mt-6 uppercase;
     font-family: 'Inter', system-ui, sans-serif;
     color: hsl(var(--muted-foreground));
     letter-spacing: 0.1em;
@@ -334,7 +374,7 @@
 
   /* Paragraphs */
   .markdown-preview p {
-    @apply mb-6 leading-relaxed;
+    @apply mb-4 sm:mb-6 leading-relaxed;
     text-align: left;
     word-spacing: 0.02em;
   }
@@ -345,12 +385,18 @@
 
   /* Lists */
   .markdown-preview ul, .markdown-preview ol {
-    @apply mb-6 pl-6 sm:pl-8 space-y-3;
+    @apply mb-4 sm:mb-6 pl-5 sm:pl-8 space-y-2 sm:space-y-3;
   }
 
   .markdown-preview li {
     @apply leading-relaxed;
-    padding-left: 0.5rem;
+    padding-left: 0.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .markdown-preview li {
+      padding-left: 0.5rem;
+    }
   }
 
   .markdown-preview ul li {
@@ -373,17 +419,18 @@
 
   /* Inline code - Default style */
   .markdown-preview code:not(pre code) {
-    @apply px-2 py-0.5 rounded-md text-sm;
+    @apply px-1.5 sm:px-2 py-0.5 rounded text-xs sm:text-sm;
     background: hsl(var(--muted) / 0.7);
     font-family: 'SF Mono', Monaco, 'Consolas', 'Fira Code', monospace;
     color: hsl(var(--foreground));
     font-weight: 500;
     border: 1px solid hsl(var(--border) / 0.5);
+    word-break: break-word;
   }
 
   /* Inline code - Badge style (for flags like --help) */
   .markdown-preview code.inline-code {
-    @apply px-2.5 py-1 rounded-md text-sm font-semibold;
+    @apply px-2 sm:px-2.5 py-0.5 sm:py-1 rounded text-xs sm:text-sm font-semibold;
     background: hsl(var(--primary) / 0.15);
     font-family: 'SF Mono', Monaco, 'Consolas', 'Fira Code', monospace;
     color: hsl(var(--primary));
@@ -405,11 +452,12 @@
 
   /* Code blocks - Light Mode */
   .markdown-preview pre {
-    @apply p-5 sm:p-6 rounded-xl mb-8 mt-4 overflow-x-auto;
+    @apply p-3 xs:p-4 sm:p-5 md:p-6 rounded-lg sm:rounded-xl mb-6 sm:mb-8 mt-3 sm:mt-4 overflow-x-auto;
     background: hsl(40 20% 96%);
     border: 1px solid hsl(35 15% 88%);
     position: relative;
     box-shadow: 0 2px 12px -2px hsl(30 20% 20% / 0.08);
+    -webkit-overflow-scrolling: touch;
   }
 
   /* Code blocks - Dark Mode */
@@ -420,11 +468,19 @@
   }
 
   .markdown-preview pre code {
-    @apply p-0 bg-transparent text-sm sm:text-base;
+    @apply p-0 bg-transparent text-xs sm:text-sm md:text-base;
     color: hsl(30 20% 25%);
     font-weight: 400;
-    line-height: 1.7;
+    line-height: 1.6;
     border: none;
+    word-break: normal;
+    white-space: pre;
+  }
+
+  @media (min-width: 640px) {
+    .markdown-preview pre code {
+      line-height: 1.7;
+    }
   }
 
   .dark .markdown-preview pre code {
@@ -479,11 +535,17 @@
 
   /* Blockquotes */
   .markdown-preview blockquote {
-    @apply pl-6 py-4 my-8 rounded-r-xl;
-    border-left: 4px solid hsl(var(--primary));
+    @apply pl-4 sm:pl-6 py-3 sm:py-4 my-6 sm:my-8 rounded-r-lg sm:rounded-r-xl;
+    border-left: 3px solid hsl(var(--primary));
     background: linear-gradient(135deg, hsl(var(--muted) / 0.5), hsl(var(--muted) / 0.2));
     color: hsl(var(--foreground) / 0.85);
     font-style: italic;
+  }
+
+  @media (min-width: 640px) {
+    .markdown-preview blockquote {
+      border-left-width: 4px;
+    }
   }
 
   .dark .markdown-preview blockquote {
@@ -498,12 +560,20 @@
   .markdown-preview a {
     color: hsl(var(--primary));
     text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
     text-decoration-color: hsl(var(--primary) / 0.4);
     cursor: pointer;
     transition: all 0.2s ease;
     font-weight: 500;
+    word-break: break-word;
+  }
+
+  @media (min-width: 640px) {
+    .markdown-preview a {
+      text-decoration-thickness: 2px;
+      text-underline-offset: 4px;
+    }
   }
 
   .markdown-preview a:hover {
@@ -513,22 +583,37 @@
 
   /* Horizontal rule */
   .markdown-preview hr {
-    @apply my-12 border-0;
-    height: 2px;
+    @apply my-8 sm:my-12 border-0;
+    height: 1px;
     background: linear-gradient(to right, transparent, hsl(var(--primary) / 0.3), transparent);
+  }
+
+  @media (min-width: 640px) {
+    .markdown-preview hr {
+      height: 2px;
+    }
   }
 
   /* Tables */
   .markdown-preview .table-wrapper {
-    @apply my-8 overflow-x-auto rounded-xl;
+    @apply my-6 sm:my-8 overflow-x-auto rounded-lg sm:rounded-xl;
     border: 1px solid hsl(var(--border));
     box-shadow: 0 2px 8px -2px hsl(var(--foreground) / 0.08);
+    -webkit-overflow-scrolling: touch;
   }
 
   .markdown-preview table {
     @apply w-full border-collapse;
     font-family: 'Inter', system-ui, sans-serif;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    min-width: 400px;
+  }
+
+  @media (min-width: 640px) {
+    .markdown-preview table {
+      font-size: 0.9rem;
+      min-width: auto;
+    }
   }
 
   .markdown-preview thead {
@@ -540,7 +625,7 @@
   }
 
   .markdown-preview th {
-    @apply px-4 py-3 font-semibold;
+    @apply px-3 sm:px-4 py-2 sm:py-3 font-semibold;
     text-align: left;
     color: hsl(var(--foreground));
     border-bottom: 2px solid hsl(var(--primary) / 0.3);
@@ -548,7 +633,7 @@
   }
 
   .markdown-preview td {
-    @apply px-4 py-3;
+    @apply px-3 sm:px-4 py-2 sm:py-3;
     border-bottom: 1px solid hsl(var(--border) / 0.6);
     color: hsl(var(--foreground) / 0.9);
   }
@@ -567,12 +652,12 @@
 
   /* Images */
   .markdown-preview .md-image {
-    @apply my-8;
+    @apply my-6 sm:my-8;
     text-align: center;
   }
 
   .markdown-preview .md-image img {
-    @apply max-w-full h-auto rounded-xl mx-auto;
+    @apply max-w-full h-auto rounded-lg sm:rounded-xl mx-auto;
     box-shadow: 0 4px 20px -4px hsl(var(--foreground) / 0.15);
     border: 1px solid hsl(var(--border) / 0.5);
   }
@@ -583,7 +668,7 @@
   }
 
   .markdown-preview .md-image figcaption {
-    @apply mt-3 text-sm italic;
+    @apply mt-2 sm:mt-3 text-xs sm:text-sm italic;
     color: hsl(var(--muted-foreground));
     font-family: 'Inter', system-ui, sans-serif;
   }

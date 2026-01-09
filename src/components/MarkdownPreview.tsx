@@ -66,7 +66,7 @@ const MarkdownPreview = ({ content }: MarkdownPreviewProps) => {
 
   if (!content) {
     return (
-      <div className="w-full max-w-[95%] xs:max-w-[90%] sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto px-5 py-8 xs:px-6 xs:py-10 sm:px-8 sm:py-12 md:px-12 md:py-16 text-muted-foreground italic font-serif text-base sm:text-lg">
+      <div className="w-full max-w-[92%] xs:max-w-[88%] sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto px-4 py-6 xs:px-5 xs:py-8 sm:px-6 sm:py-10 md:px-8 md:py-12 text-muted-foreground italic font-serif">
         Tidak ada konten untuk ditampilkan...
       </div>
     );
@@ -78,7 +78,7 @@ const MarkdownPreview = ({ content }: MarkdownPreviewProps) => {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="markdown-preview w-full max-w-[95%] xs:max-w-[90%] sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto px-5 py-8 xs:px-6 xs:py-10 sm:px-8 sm:py-12 md:px-12 md:py-16 lg:px-20 lg:py-20 xl:px-24 xl:py-24 text-base sm:text-lg pb-24 xs:pb-28 sm:pb-32"
+      className="markdown-preview w-full max-w-[92%] xs:max-w-[88%] sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto px-4 py-6 xs:px-5 xs:py-8 sm:px-6 sm:py-10 md:px-8 md:py-12 lg:px-12 lg:py-16 pb-20 xs:pb-24 sm:pb-28"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );
