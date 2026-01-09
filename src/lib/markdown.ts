@@ -41,6 +41,13 @@ export function parseMarkdown(text: string): string {
   });
 
   // Code blocks with syntax highlighting (must be before other replacements)
+  // Handle Mermaid blocks separately
+  html = html.replace(/```mermaid\n?([\s\S]*?)```/g, (_, code) => {
+    const trimmedCode = code.trim();
+    return `<div class="mermaid-diagram" data-mermaid="${encodeURIComponent(trimmedCode)}">${trimmedCode}</div>`;
+  });
+
+  // Regular code blocks with syntax highlighting
   html = html.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) => {
     const trimmedCode = code.trim();
     try {

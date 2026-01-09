@@ -717,6 +717,32 @@
     padding-left: 0 !important;
   }
 
+  /* Mermaid Diagrams */
+  .markdown-preview .mermaid-diagram {
+    @apply my-6 sm:my-8 p-4 sm:p-6 rounded-lg sm:rounded-xl overflow-x-auto;
+    background: hsl(var(--muted) / 0.3);
+    border: 1px solid hsl(var(--border));
+    text-align: center;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .dark .markdown-preview .mermaid-diagram {
+    background: hsl(30 12% 10%);
+    border-color: hsl(30 10% 18%);
+  }
+
+  .markdown-preview .mermaid-diagram svg {
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+  }
+
+  .markdown-preview .mermaid-error {
+    @apply text-sm py-4 px-6;
+    color: hsl(var(--destructive));
+    font-family: 'SF Mono', Monaco, 'Consolas', monospace;
+  }
+
   /* Strong text */
   .markdown-preview strong {
     @apply font-bold;
