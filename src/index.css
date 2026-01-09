@@ -403,6 +403,7 @@
     text-decoration: underline;
     text-underline-offset: 3px;
     pointer-events: auto;
+    cursor: pointer;
   }
 
   .md-link:hover {

@@ -168,7 +168,7 @@ const processContent = (content: string): React.ReactNode[] => {
     } else {
       result.push(renderLine(line, index, inCodeBlock));
     }
-    
+
     // Add newline except for last line
     if (index < lines.length - 1) {
       result.push('\n');
@@ -176,6 +176,27 @@ const processContent = (content: string): React.ReactNode[] => {
   });
 
   return result;
+};
+
+const findUrlAtPosition = (text: string, pos: number): string | null => {
+  if (pos < 0 || pos > text.length) return null;
+
+  const lineStart = text.lastIndexOf('\n', Math.max(0, pos - 1)) + 1;
+  const nextNewline = text.indexOf('\n', pos);
+  const lineEnd = nextNewline === -1 ? text.length : nextNewline;
+
+  const line = text.slice(lineStart, lineEnd);
+  const posInLine = pos - lineStart;
+
+  const urlRegex = /https?:\/\/[^\s)\]]+/g;
+  let match: RegExpExecArray | null;
+  while ((match = urlRegex.exec(line))) {
+    const start = match.index;
+    const end = start + match[0].length;
+    if (posInLine >= start && posInLine <= end) return match[0];
+  }
+
+  return null;
 };
 
 const LiveEditor = ({ value, onChange, placeholder = "Mulai menulis..." }: LiveEditorProps) => {
@@ -222,16 +243,46 @@ const LiveEditor = ({ value, onChange, placeholder = "Mulai menulis..." }: LiveE
     onChange(e.target.value);
   };
 
+  const handleMouseUp = (e: React.MouseEvent<HTMLTextAreaElement>) => {
+    // Desktop: Ctrl/Cmd + click to open
+    if (!e.ctrlKey && !e.metaKey) return;
+
+    // Wait for the caret to update after click
+    requestAnimationFrame(() => {
+      const textarea = e.currentTarget;
+      const pos = textarea.selectionStart;
+
+      const url = findUrlAtPosition(value, pos);
+      if (url) window.open(url, '_blank', 'noopener,noreferrer');
+    });
+  };
+
+  const openLinkAtCaret = (textarea: HTMLTextAreaElement) => {
+    const pos = textarea.selectionStart;
+    const url = findUrlAtPosition(value, pos);
+    if (url) window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleDoubleClick = (e: React.MouseEvent<HTMLTextAreaElement>) => {
+    // Desktop: double click on a URL to open
+    requestAnimationFrame(() => openLinkAtCaret(e.currentTarget));
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLTextAreaElement>) => {
+    // Mobile: tap on a URL to open (after caret updates)
+    requestAnimationFrame(() => openLinkAtCaret(e.currentTarget));
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Tab') {
       e.preventDefault();
       const textarea = e.currentTarget;
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;
-      
+
       const newValue = value.substring(0, start) + '  ' + value.substring(end);
       onChange(newValue);
-      
+
       requestAnimationFrame(() => {
         textarea.selectionStart = textarea.selectionEnd = start + 2;
       });
@@ -261,6 +312,9 @@ const LiveEditor = ({ value, onChange, placeholder = "Mulai menulis..." }: LiveE
           value={value}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
+          onMouseUp={handleMouseUp}
+          onDoubleClick={handleDoubleClick}
+          onTouchEnd={handleTouchEnd}
           onScroll={syncScroll}
           placeholder=""
           className="live-textarea absolute inset-0 w-full h-full resize-none outline-none border-0 bg-transparent px-4 py-8 sm:px-6 sm:py-12 md:px-12 md:py-16 lg:px-20 lg:py-20 pb-32"
