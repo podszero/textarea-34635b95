@@ -43,13 +43,18 @@ const MarkdownPreview = ({ content }: MarkdownPreviewProps) => {
 
   // Handle image click using event delegation
   const handleContainerClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const target = e.target as HTMLElement;
-    
-    // Check if clicked element is an image with lightbox attribute
-    if (target.tagName === 'IMG' && target.getAttribute('data-lightbox') === 'true') {
-      const img = target as HTMLImageElement;
-      openLightbox(img.src, img.alt || 'Image');
-    }
+    const target = e.target as HTMLElement | null;
+    if (!target) return;
+
+    // Support images wrapped in links: find the closest lightbox image
+    const img = target.closest('img[data-lightbox="true"]') as HTMLImageElement | null;
+    if (!img) return;
+
+    // Prevent anchor navigation/redirection
+    e.preventDefault();
+    e.stopPropagation();
+
+    openLightbox(img.src, img.alt || 'Image');
   }, [openLightbox]);
 
   useEffect(() => {
