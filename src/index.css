@@ -43,6 +43,7 @@
     --editor-text: 30 10% 18%;
     --editor-placeholder: 30 8% 55%;
     --editor-selection: 32 90% 85%;
+    --editor-selection-text: 30 10% 10%;
     --editor-cursor: 32 95% 44%;
 
     /* Floating menu */
@@ -92,7 +93,8 @@
     --editor-bg: 30 12% 9%;
     --editor-text: 40 15% 88%;
     --editor-placeholder: 30 8% 45%;
-    --editor-selection: 35 60% 25%;
+    --editor-selection: 35 80% 35%;
+    --editor-selection-text: 40 20% 98%;
     --editor-cursor: 35 100% 55%;
 
     --menu-bg: 30 12% 12%;
@@ -293,14 +295,40 @@
     -webkit-text-size-adjust: 100%;
   }
 
-  /* Selection styling */
+  /* Selection styling - ensure readable text when highlighted */
   .live-textarea::selection {
     background: hsl(var(--editor-selection));
+    color: hsl(var(--editor-selection-text));
   }
 
   .live-highlight ::selection {
-    background: hsl(var(--editor-selection));
-    color: hsl(var(--foreground));
+    background: hsl(var(--editor-selection)) !important;
+    color: hsl(var(--editor-selection-text)) !important;
+    -webkit-text-fill-color: hsl(var(--editor-selection-text)) !important;
+  }
+
+  .live-highlight .md-syntax::selection,
+  .live-highlight .md-h1::selection,
+  .live-highlight .md-h2::selection,
+  .live-highlight .md-h3::selection,
+  .live-highlight .md-h4::selection,
+  .live-highlight .md-h5::selection,
+  .live-highlight .md-h6::selection,
+  .live-highlight .md-bold::selection,
+  .live-highlight .md-italic::selection,
+  .live-highlight .md-strike::selection,
+  .live-highlight .md-inline-code::selection,
+  .live-highlight .md-code-text::selection,
+  .live-highlight .md-code-fence::selection,
+  .live-highlight .md-code-content::selection,
+  .live-highlight .md-link::selection,
+  .live-highlight strong::selection,
+  .live-highlight em::selection,
+  .live-highlight del::selection,
+  .live-highlight span::selection {
+    background: hsl(var(--editor-selection)) !important;
+    color: hsl(var(--editor-selection-text)) !important;
+    -webkit-text-fill-color: hsl(var(--editor-selection-text)) !important;
   }
 
   /* Markdown syntax - dimmed amber */
