@@ -53,10 +53,14 @@ export function parseMarkdown(text: string): string {
     }
   });
 
-  // Images ![alt](url) or ![alt](url "title")
+  // Checklist / Task list - must be before unordered lists
+  html = html.replace(/^- \[x\] (.+)$/gim, '<li class="task-item checked"><input type="checkbox" checked disabled /><span>$1</span></li>');
+  html = html.replace(/^- \[ \] (.+)$/gm, '<li class="task-item"><input type="checkbox" disabled /><span>$1</span></li>');
+
+  // Images ![alt](url) or ![alt](url "title") - with data attributes for lightbox
   html = html.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)/g, (_, alt, url, title) => {
     const titleAttr = title ? ` title="${title}"` : '';
-    return `<figure class="md-image"><img src="${url}" alt="${alt}"${titleAttr} loading="lazy" />${alt ? `<figcaption>${alt}</figcaption>` : ''}</figure>`;
+    return `<figure class="md-image"><img src="${url}" alt="${alt}"${titleAttr} loading="lazy" data-lightbox="true" />${alt ? `<figcaption>${alt}</figcaption>` : ''}</figure>`;
   });
 
   // Inline code with special styling

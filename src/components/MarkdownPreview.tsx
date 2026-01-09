@@ -1,16 +1,27 @@
 import { motion } from 'framer-motion';
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { Check, Copy } from 'lucide-react';
 import { parseMarkdown } from '@/lib/markdown';
+import ImageLightbox from './ImageLightbox';
 
 interface MarkdownPreviewProps {
   content: string;
+}
+
+interface LightboxState {
+  isOpen: boolean;
+  src: string;
+  alt: string;
 }
 
 const MarkdownPreview = ({ content }: MarkdownPreviewProps) => {
   const html = parseMarkdown(content);
   const containerRef = useRef<HTMLDivElement>(null);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const [lightbox, setLightbox] = useState<LightboxState>({
+    isOpen: false,
+    src: '',
+    alt: ''
+  });
 
   const handleCopyCode = useCallback(async (code: string, index: number) => {
     try {
@@ -20,6 +31,14 @@ const MarkdownPreview = ({ content }: MarkdownPreviewProps) => {
     } catch (err) {
       console.error('Failed to copy:', err);
     }
+  }, []);
+
+  const openLightbox = useCallback((src: string, alt: string) => {
+    setLightbox({ isOpen: true, src, alt });
+  }, []);
+
+  const closeLightbox = useCallback(() => {
+    setLightbox(prev => ({ ...prev, isOpen: false }));
   }, []);
 
   useEffect(() => {
@@ -46,7 +65,29 @@ const MarkdownPreview = ({ content }: MarkdownPreviewProps) => {
 
       pre.appendChild(button);
     });
-  }, [html, handleCopyCode]);
+
+    // Add click handlers for lightbox images
+    const images = containerRef.current.querySelectorAll('img[data-lightbox="true"]');
+    images.forEach((img) => {
+      const imgElement = img as HTMLImageElement;
+      imgElement.style.cursor = 'zoom-in';
+      
+      const handleClick = () => {
+        openLightbox(imgElement.src, imgElement.alt);
+      };
+      
+      imgElement.addEventListener('click', handleClick);
+    });
+
+    return () => {
+      // Cleanup image listeners
+      const images = containerRef.current?.querySelectorAll('img[data-lightbox="true"]');
+      images?.forEach((img) => {
+        const imgElement = img as HTMLImageElement;
+        imgElement.removeEventListener('click', () => {});
+      });
+    };
+  }, [html, handleCopyCode, openLightbox]);
 
   // Update button states when copiedIndex changes
   useEffect(() => {
@@ -73,14 +114,23 @@ const MarkdownPreview = ({ content }: MarkdownPreviewProps) => {
   }
 
   return (
-    <motion.div
-      ref={containerRef}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="markdown-preview w-full max-w-[92%] xs:max-w-[88%] sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto px-4 py-6 xs:px-5 xs:py-8 sm:px-6 sm:py-10 md:px-8 md:py-12 lg:px-12 lg:py-16 pb-20 xs:pb-24 sm:pb-28"
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
+    <>
+      <motion.div
+        ref={containerRef}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="markdown-preview w-full max-w-[92%] xs:max-w-[88%] sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto px-4 py-6 xs:px-5 xs:py-8 sm:px-6 sm:py-10 md:px-8 md:py-12 lg:px-12 lg:py-16 pb-20 xs:pb-24 sm:pb-28"
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+      
+      <ImageLightbox
+        src={lightbox.src}
+        alt={lightbox.alt}
+        isOpen={lightbox.isOpen}
+        onClose={closeLightbox}
+      />
+    </>
   );
 };
 

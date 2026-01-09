@@ -660,6 +660,12 @@
     @apply max-w-full h-auto rounded-lg sm:rounded-xl mx-auto;
     box-shadow: 0 4px 20px -4px hsl(var(--foreground) / 0.15);
     border: 1px solid hsl(var(--border) / 0.5);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .markdown-preview .md-image img[data-lightbox="true"]:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 30px -4px hsl(var(--foreground) / 0.25);
   }
 
   .dark .markdown-preview .md-image img {
@@ -667,10 +673,48 @@
     border-color: hsl(30 10% 20%);
   }
 
+  .dark .markdown-preview .md-image img[data-lightbox="true"]:hover {
+    box-shadow: 0 8px 32px -4px hsl(0 0% 0% / 0.7);
+  }
+
   .markdown-preview .md-image figcaption {
     @apply mt-2 sm:mt-3 text-xs sm:text-sm italic;
     color: hsl(var(--muted-foreground));
     font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  /* Task List / Checklist */
+  .markdown-preview .task-item {
+    @apply flex items-start gap-2 sm:gap-3 leading-relaxed;
+    list-style: none !important;
+    padding-left: 0 !important;
+  }
+
+  .markdown-preview .task-item::marker {
+    content: none;
+  }
+
+  .markdown-preview .task-item input[type="checkbox"] {
+    @apply mt-1 sm:mt-1.5 w-4 h-4 sm:w-5 sm:h-5 rounded flex-shrink-0;
+    accent-color: hsl(var(--primary));
+    cursor: default;
+  }
+
+  .markdown-preview .task-item.checked span {
+    text-decoration: line-through;
+    text-decoration-thickness: 2px;
+    text-decoration-color: hsl(var(--primary) / 0.5);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .markdown-preview .task-item span {
+    flex: 1;
+  }
+
+  /* Task list wrapper */
+  .markdown-preview ul:has(.task-item) {
+    @apply space-y-2 sm:space-y-3;
+    padding-left: 0 !important;
   }
 
   /* Strong text */
