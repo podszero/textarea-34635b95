@@ -7,12 +7,13 @@ import {
   QrCode,
   Eye,
   Edit3,
-  Copy,
   Check,
   Moon,
   Sun,
   Link,
   ClipboardCopy,
+  Save,
+  FolderOpen,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -27,6 +28,8 @@ import { compressText } from '@/lib/compression';
 interface FloatingMenuProps {
   onNew: () => void;
   onShare: () => void;
+  onSave: () => void;
+  onOpenDocuments: () => void;
   onDownloadHtml: () => void;
   onDownloadText: () => void;
   onDownloadMarkdown: () => void;
@@ -36,11 +39,14 @@ interface FloatingMenuProps {
   isDark: boolean;
   onToggleTheme: () => void;
   content: string;
+  hasDocuments: boolean;
 }
 
 const FloatingMenu = ({
   onNew,
   onShare,
+  onSave,
+  onOpenDocuments,
   onDownloadHtml,
   onDownloadText,
   onDownloadMarkdown,
@@ -50,6 +56,7 @@ const FloatingMenu = ({
   isDark,
   onToggleTheme,
   content,
+  hasDocuments,
 }: FloatingMenuProps) => {
   const [copiedUrl, setCopiedUrl] = useState(false);
   const [copiedText, setCopiedText] = useState(false);
@@ -107,7 +114,7 @@ const FloatingMenu = ({
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3, delay: 0.2 }}
-      className="fixed bottom-4 right-4 xs:bottom-5 xs:right-5 sm:bottom-6 sm:right-6 md:bottom-8 md:right-8 z-50 safe-bottom"
+      className="fixed bottom-4 right-4 xs:bottom-5 xs:right-5 sm:bottom-6 sm:right-6 md:bottom-8 md:right-8 z-40 safe-bottom"
     >
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -129,6 +136,28 @@ const FloatingMenu = ({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.2 }}
           >
+            {/* Document Management */}
+            <DropdownMenuItem
+              onClick={onOpenDocuments}
+              className="flex items-center gap-3 py-2.5 sm:py-3 px-3 rounded-lg cursor-pointer touch-manipulation"
+            >
+              <FolderOpen className="h-4 w-4" />
+              <span>Dokumen Tersimpan</span>
+              {hasDocuments && (
+                <span className="ml-auto text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded-full">
+                  •
+                </span>
+              )}
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              onClick={onSave}
+              className="flex items-center gap-3 py-2.5 sm:py-3 px-3 rounded-lg cursor-pointer touch-manipulation"
+            >
+              <Save className="h-4 w-4" />
+              <span>Simpan Dokumen</span>
+            </DropdownMenuItem>
+
             <DropdownMenuItem
               onClick={onNew}
               className="flex items-center gap-3 py-2.5 sm:py-3 px-3 rounded-lg cursor-pointer touch-manipulation"
@@ -136,6 +165,8 @@ const FloatingMenu = ({
               <FileText className="h-4 w-4" />
               <span>Dokumen Baru</span>
             </DropdownMenuItem>
+
+            <DropdownMenuSeparator className="my-1.5 sm:my-2" />
 
             <DropdownMenuItem
               onClick={onTogglePreview}
