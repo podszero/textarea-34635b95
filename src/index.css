@@ -288,6 +288,7 @@
     @apply p-5 rounded-xl mb-6 mt-2 overflow-x-auto;
     background: hsl(30 12% 12%);
     border: 1px solid hsl(var(--border) / 0.5);
+    position: relative;
   }
 
   .dark .markdown-preview pre {
@@ -300,6 +301,32 @@
     color: hsl(40 15% 85%);
     font-weight: 400;
     line-height: 1.6;
+  }
+
+  /* Copy code button */
+  .copy-code-btn {
+    @apply absolute top-3 right-3 p-2 rounded-lg transition-all duration-200;
+    background: hsl(30 12% 20%);
+    color: hsl(40 15% 70%);
+    opacity: 0;
+    border: 1px solid hsl(30 10% 25%);
+  }
+
+  .markdown-preview pre:hover .copy-code-btn {
+    opacity: 1;
+  }
+
+  .copy-code-btn:hover {
+    background: hsl(30 12% 25%);
+    color: hsl(40 15% 90%);
+  }
+
+  .copy-code-btn.copied {
+    color: hsl(150 60% 55%);
+  }
+
+  .copy-code-btn.copied:hover {
+    color: hsl(150 60% 65%);
   }
 
   .markdown-preview blockquote {
