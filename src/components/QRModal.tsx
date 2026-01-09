@@ -1,8 +1,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Download, Share2, Copy, Check } from 'lucide-react';
+import { X, Download } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Button } from '@/components/ui/button';
-import { useState, useRef, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface QRModalProps {
   isOpen: boolean;
@@ -11,9 +11,7 @@ interface QRModalProps {
 }
 
 const QRModal = ({ isOpen, onClose, url }: QRModalProps) => {
-  const [copied, setCopied] = useState(false);
-  const [qrSize, setQrSize] = useState(180);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [qrSize, setQrSize] = useState(200);
 
   // Calculate optimal QR size based on viewport
   useEffect(() => {
@@ -21,27 +19,22 @@ const QRModal = ({ isOpen, onClose, url }: QRModalProps) => {
       const vw = window.innerWidth;
       const vh = window.innerHeight;
       
-      // Mobile portrait
-      if (vw < 480) {
-        setQrSize(Math.min(vw * 0.55, 200));
-      }
-      // Mobile landscape or small tablet
-      else if (vw < 768) {
-        setQrSize(Math.min(vw * 0.4, vh * 0.35, 220));
-      }
-      // Tablet
-      else if (vw < 1024) {
-        setQrSize(Math.min(vw * 0.3, 260));
-      }
-      // Desktop
-      else {
-        setQrSize(280);
+      if (vw < 400) {
+        setQrSize(Math.min(vw * 0.5, vh * 0.3, 160));
+      } else if (vw < 640) {
+        setQrSize(Math.min(vw * 0.45, vh * 0.32, 180));
+      } else if (vw < 1024) {
+        setQrSize(200);
+      } else {
+        setQrSize(220);
       }
     };
 
-    calculateSize();
-    window.addEventListener('resize', calculateSize);
-    return () => window.removeEventListener('resize', calculateSize);
+    if (isOpen) {
+      calculateSize();
+      window.addEventListener('resize', calculateSize);
+      return () => window.removeEventListener('resize', calculateSize);
+    }
   }, [isOpen]);
 
   const handleDownload = () => {
@@ -53,7 +46,6 @@ const QRModal = ({ isOpen, onClose, url }: QRModalProps) => {
     const ctx = canvas.getContext('2d');
     const img = new Image();
 
-    // Higher resolution for better quality
     const scale = 3;
     
     img.onload = () => {
@@ -72,166 +64,84 @@ const QRModal = ({ isOpen, onClose, url }: QRModalProps) => {
     img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
   };
 
-  const handleCopyUrl = async () => {
-    try {
-      await navigator.clipboard.writeText(url);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy:', err);
+  // Close on escape key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape);
+      return () => document.removeEventListener('keydown', handleEscape);
     }
-  };
-
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'Catatan',
-          text: 'Lihat dokumen ini',
-          url: url,
-        });
-      } catch (err) {
-        // User cancelled or error
-        console.log('Share cancelled');
-      }
-    } else {
-      handleCopyUrl();
-    }
-  };
+  }, [isOpen, onClose]);
 
   return (
     <AnimatePresence>
       {isOpen && (
-        <>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
             onClick={onClose}
-            className="fixed inset-0 bg-foreground/25 backdrop-blur-md z-50"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
           />
           
           {/* Modal */}
           <motion.div
-            ref={containerRef}
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 
-                       bg-card rounded-2xl xs:rounded-3xl shadow-2xl 
-                       p-5 xs:p-6 sm:p-8 md:p-10 
-                       w-[92vw] xs:w-[88vw] sm:w-[420px] md:w-[480px] lg:w-[520px]
-                       max-w-[520px] max-h-[90vh] overflow-y-auto
-                       border border-border/50"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 400 }}
+            className="relative bg-card rounded-2xl shadow-2xl w-full max-w-sm border border-border overflow-hidden"
           >
-            {/* Close button */}
-            <button
-              onClick={onClose}
-              className="absolute top-3 right-3 xs:top-4 xs:right-4 sm:top-5 sm:right-5 
-                         p-1.5 xs:p-2 rounded-full bg-muted/50 hover:bg-muted 
-                         text-muted-foreground hover:text-foreground 
-                         transition-all duration-200 touch-manipulation"
-              aria-label="Tutup"
-            >
-              <X className="h-4 w-4 xs:h-5 xs:w-5" />
-            </button>
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-border">
+              <div>
+                <h2 className="text-lg sm:text-xl font-bold text-foreground">
+                  Kode QR
+                </h2>
+                <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+                  Scan untuk membuka dokumen
+                </p>
+              </div>
+              <button
+                onClick={onClose}
+                className="p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors touch-manipulation"
+                aria-label="Tutup"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
 
-            {/* Content */}
-            <div className="text-center">
-              <h2 className="text-lg xs:text-xl sm:text-2xl font-bold mb-1 xs:mb-2 text-foreground">
-                Kode QR
-              </h2>
-              <p className="text-xs xs:text-sm sm:text-base text-muted-foreground mb-4 xs:mb-5 sm:mb-6 max-w-[280px] mx-auto">
-                Scan untuk membuka dokumen ini di perangkat lain
-              </p>
-
-              {/* QR Code Container */}
-              <div className="relative bg-white p-4 xs:p-5 sm:p-6 md:p-8 rounded-xl xs:rounded-2xl inline-block mb-4 xs:mb-5 sm:mb-6 shadow-inner border border-gray-100">
+            {/* QR Code */}
+            <div className="flex flex-col items-center p-5 sm:p-6">
+              <div className="bg-white p-4 sm:p-5 rounded-xl shadow-sm">
                 <QRCodeSVG
                   value={url}
                   size={qrSize}
-                  level="H"
+                  level="M"
                   includeMargin={false}
-                  className="qr-code-svg"
-                  style={{ 
-                    width: qrSize, 
-                    height: qrSize,
-                    display: 'block'
-                  }}
+                  className="qr-code-svg block"
                 />
               </div>
+            </div>
 
-              {/* URL Preview */}
-              <div className="mb-4 xs:mb-5 sm:mb-6 px-2">
-                <div className="bg-muted/50 rounded-lg xs:rounded-xl p-2.5 xs:p-3 sm:p-4 border border-border/30">
-                  <p className="text-[10px] xs:text-xs sm:text-sm text-muted-foreground truncate font-mono">
-                    {url.length > 50 ? url.substring(0, 50) + '...' : url}
-                  </p>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex flex-col xs:flex-row gap-2 xs:gap-3 sm:gap-4">
-                {/* Copy URL Button */}
-                <Button
-                  onClick={handleCopyUrl}
-                  variant="outline"
-                  className="flex-1 gap-2 h-10 xs:h-11 sm:h-12 text-xs xs:text-sm sm:text-base touch-manipulation rounded-xl"
-                >
-                  <AnimatePresence mode="wait">
-                    {copied ? (
-                      <motion.div
-                        key="check"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        exit={{ scale: 0 }}
-                        className="flex items-center gap-2"
-                      >
-                        <Check className="h-4 w-4 text-green-600" />
-                        <span className="text-green-600">Tersalin!</span>
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="copy"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        exit={{ scale: 0 }}
-                        className="flex items-center gap-2"
-                      >
-                        <Copy className="h-4 w-4" />
-                        <span>Salin URL</span>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </Button>
-
-                {/* Share Button (mobile) or Download Button */}
-                {'share' in navigator ? (
-                  <Button
-                    onClick={handleShare}
-                    variant="outline"
-                    className="flex-1 gap-2 h-10 xs:h-11 sm:h-12 text-xs xs:text-sm sm:text-base touch-manipulation rounded-xl"
-                  >
-                    <Share2 className="h-4 w-4" />
-                    <span>Bagikan</span>
-                  </Button>
-                ) : null}
-
-                {/* Download QR Button */}
-                <Button
-                  onClick={handleDownload}
-                  className="flex-1 gap-2 h-10 xs:h-11 sm:h-12 text-xs xs:text-sm sm:text-base touch-manipulation rounded-xl"
-                  variant="default"
-                >
-                  <Download className="h-4 w-4" />
-                  <span>Unduh QR</span>
-                </Button>
-              </div>
+            {/* Footer */}
+            <div className="p-4 sm:p-5 border-t border-border bg-muted/30">
+              <Button
+                onClick={handleDownload}
+                className="w-full h-11 sm:h-12 gap-2 text-sm sm:text-base font-medium touch-manipulation"
+                variant="default"
+              >
+                <Download className="h-4 w-4 sm:h-5 sm:w-5" />
+                Unduh QR Code
+              </Button>
             </div>
           </motion.div>
-        </>
+        </div>
       )}
     </AnimatePresence>
   );
