@@ -382,8 +382,26 @@
     background: transparent;
     color: transparent;
     caret-color: hsl(var(--editor-cursor));
+    caret-width: 3px;
     -webkit-tap-highlight-color: transparent;
     -webkit-text-size-adjust: 100%;
+  }
+
+  /* Custom caret animation */
+  @keyframes caretBlink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  .live-textarea:focus {
+    caret-color: hsl(var(--editor-cursor));
+  }
+
+  /* Fallback for browsers that don't support caret-width */
+  @supports not (caret-width: 3px) {
+    .live-textarea {
+      text-shadow: none;
+    }
   }
 
   /* Selection styling - ensure readable text when highlighted */

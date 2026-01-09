@@ -374,6 +374,9 @@ const LiveEditor = ({ value, onChange, placeholder = "Mulai menulis..." }: LiveE
           autoComplete="off"
           autoCapitalize="sentences"
           autoCorrect="on"
+          style={{
+            caretColor: 'hsl(35 100% 55%)',
+          }}
         />
 
         {/* Link tooltip */}
