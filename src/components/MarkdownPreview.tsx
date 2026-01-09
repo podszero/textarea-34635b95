@@ -41,6 +41,17 @@ const MarkdownPreview = ({ content }: MarkdownPreviewProps) => {
     setLightbox(prev => ({ ...prev, isOpen: false }));
   }, []);
 
+  // Handle image click using event delegation
+  const handleContainerClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    
+    // Check if clicked element is an image with lightbox attribute
+    if (target.tagName === 'IMG' && target.getAttribute('data-lightbox') === 'true') {
+      const img = target as HTMLImageElement;
+      openLightbox(img.src, img.alt || 'Image');
+    }
+  }, [openLightbox]);
+
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -65,29 +76,7 @@ const MarkdownPreview = ({ content }: MarkdownPreviewProps) => {
 
       pre.appendChild(button);
     });
-
-    // Add click handlers for lightbox images
-    const images = containerRef.current.querySelectorAll('img[data-lightbox="true"]');
-    images.forEach((img) => {
-      const imgElement = img as HTMLImageElement;
-      imgElement.style.cursor = 'zoom-in';
-      
-      const handleClick = () => {
-        openLightbox(imgElement.src, imgElement.alt);
-      };
-      
-      imgElement.addEventListener('click', handleClick);
-    });
-
-    return () => {
-      // Cleanup image listeners
-      const images = containerRef.current?.querySelectorAll('img[data-lightbox="true"]');
-      images?.forEach((img) => {
-        const imgElement = img as HTMLImageElement;
-        imgElement.removeEventListener('click', () => {});
-      });
-    };
-  }, [html, handleCopyCode, openLightbox]);
+  }, [html, handleCopyCode]);
 
   // Update button states when copiedIndex changes
   useEffect(() => {
@@ -121,6 +110,7 @@ const MarkdownPreview = ({ content }: MarkdownPreviewProps) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
         className="markdown-preview w-full max-w-[92%] xs:max-w-[88%] sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto px-4 py-6 xs:px-5 xs:py-8 sm:px-6 sm:py-10 md:px-8 md:py-12 lg:px-12 lg:py-16 pb-20 xs:pb-24 sm:pb-28"
+        onClick={handleContainerClick}
         dangerouslySetInnerHTML={{ __html: html }}
       />
       
