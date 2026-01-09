@@ -1,5 +1,6 @@
-import { useRef, useCallback, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useRef, useCallback, useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ExternalLink } from 'lucide-react';
 
 interface LiveEditorProps {
   value: string;
@@ -45,7 +46,7 @@ const renderLine = (line: string, lineIndex: number, inCodeBlock: boolean): Reac
   if (!line) {
     return <span key={lineIndex}>{'\u00A0'}</span>;
   }
-  
+
   return <span key={lineIndex}>{parseInline(line)}</span>;
 };
 
@@ -131,15 +132,9 @@ const parseInline = (text: string): React.ReactNode[] => {
     if (urlMatch) {
       flushRegularText();
       elements.push(
-        <a 
-          key={keyIndex++} 
-          href={urlMatch[1]}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="md-link"
-        >
+        <span key={keyIndex++} className="md-link">
           {urlMatch[1]}
-        </a>
+        </span>
       );
       remaining = remaining.slice(urlMatch[1].length);
       continue;
@@ -199,9 +194,17 @@ const findUrlAtPosition = (text: string, pos: number): string | null => {
   return null;
 };
 
+interface LinkTooltip {
+  url: string;
+  x: number;
+  y: number;
+}
+
 const LiveEditor = ({ value, onChange, placeholder = "Mulai menulis..." }: LiveEditorProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const highlightRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [linkTooltip, setLinkTooltip] = useState<LinkTooltip | null>(null);
 
   // Sync scroll
   const syncScroll = useCallback(() => {
@@ -239,41 +242,71 @@ const LiveEditor = ({ value, onChange, placeholder = "Mulai menulis..." }: LiveE
     textareaRef.current?.focus();
   }, []);
 
+  // Hide tooltip when clicking outside or scrolling
+  useEffect(() => {
+    const handleClickOutside = () => setLinkTooltip(null);
+    window.addEventListener('scroll', handleClickOutside, true);
+    return () => window.removeEventListener('scroll', handleClickOutside, true);
+  }, []);
+
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange(e.target.value);
+    setLinkTooltip(null);
   };
 
-  const handleMouseUp = (e: React.MouseEvent<HTMLTextAreaElement>) => {
-    // Desktop: Ctrl/Cmd + click to open
-    if (!e.ctrlKey && !e.metaKey) return;
-
-    // Wait for the caret to update after click
-    requestAnimationFrame(() => {
-      const textarea = e.currentTarget;
-      const pos = textarea.selectionStart;
-
-      const url = findUrlAtPosition(value, pos);
-      if (url) window.open(url, '_blank', 'noopener,noreferrer');
-    });
-  };
-
-  const openLinkAtCaret = (textarea: HTMLTextAreaElement) => {
+  const checkForLinkAtCursor = useCallback((textarea: HTMLTextAreaElement) => {
     const pos = textarea.selectionStart;
     const url = findUrlAtPosition(value, pos);
-    if (url) window.open(url, '_blank', 'noopener,noreferrer');
-  };
 
-  const handleDoubleClick = (e: React.MouseEvent<HTMLTextAreaElement>) => {
-    // Desktop: double click on a URL to open
-    requestAnimationFrame(() => openLinkAtCaret(e.currentTarget));
-  };
+    if (url) {
+      // Get cursor position for tooltip
+      const rect = textarea.getBoundingClientRect();
+      const lineHeight = parseFloat(getComputedStyle(textarea).lineHeight) || 28;
 
-  const handleTouchEnd = (e: React.TouchEvent<HTMLTextAreaElement>) => {
-    // Mobile: tap on a URL to open (after caret updates)
-    requestAnimationFrame(() => openLinkAtCaret(e.currentTarget));
-  };
+      // Calculate approximate position
+      const textBeforeCursor = value.substring(0, pos);
+      const lines = textBeforeCursor.split('\n');
+      const currentLineIndex = lines.length - 1;
+
+      const paddingTop = parseFloat(getComputedStyle(textarea).paddingTop) || 32;
+      const y = rect.top + paddingTop + (currentLineIndex * lineHeight) - textarea.scrollTop;
+      const x = rect.left + 100;
+
+      setLinkTooltip({ url, x, y });
+    } else {
+      setLinkTooltip(null);
+    }
+  }, [value]);
+
+  const handleClick = useCallback((e: React.MouseEvent<HTMLTextAreaElement>) => {
+    // Delay to let cursor position update
+    setTimeout(() => {
+      checkForLinkAtCursor(e.currentTarget);
+    }, 10);
+  }, [checkForLinkAtCursor]);
+
+  const handleKeyUp = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // Check for link when moving with arrow keys
+    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+      checkForLinkAtCursor(e.currentTarget);
+    }
+  }, [checkForLinkAtCursor]);
+
+  const handleOpenLink = useCallback(() => {
+    if (linkTooltip?.url) {
+      window.open(linkTooltip.url, '_blank', 'noopener,noreferrer');
+      setLinkTooltip(null);
+    }
+  }, [linkTooltip]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // Open link with Ctrl/Cmd + Enter when on a link
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && linkTooltip?.url) {
+      e.preventDefault();
+      handleOpenLink();
+      return;
+    }
+
     if (e.key === 'Tab') {
       e.preventDefault();
       const textarea = e.currentTarget;
@@ -287,6 +320,11 @@ const LiveEditor = ({ value, onChange, placeholder = "Mulai menulis..." }: LiveE
         textarea.selectionStart = textarea.selectionEnd = start + 2;
       });
     }
+
+    // Hide tooltip on Escape
+    if (e.key === 'Escape') {
+      setLinkTooltip(null);
+    }
   };
 
   return (
@@ -296,7 +334,7 @@ const LiveEditor = ({ value, onChange, placeholder = "Mulai menulis..." }: LiveE
       transition={{ duration: 0.4, ease: 'easeOut' }}
       className="w-full min-h-screen safe-top bg-editor-bg"
     >
-      <div className="live-editor-container relative max-w-3xl mx-auto">
+      <div ref={containerRef} className="live-editor-container relative max-w-3xl mx-auto">
         {/* Highlight overlay */}
         <div
           ref={highlightRef}
@@ -312,9 +350,8 @@ const LiveEditor = ({ value, onChange, placeholder = "Mulai menulis..." }: LiveE
           value={value}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
-          onMouseUp={handleMouseUp}
-          onDoubleClick={handleDoubleClick}
-          onTouchEnd={handleTouchEnd}
+          onKeyUp={handleKeyUp}
+          onClick={handleClick}
           onScroll={syncScroll}
           placeholder=""
           className="live-textarea absolute inset-0 w-full h-full resize-none outline-none border-0 bg-transparent px-4 py-8 sm:px-6 sm:py-12 md:px-12 md:py-16 lg:px-20 lg:py-20 pb-32"
@@ -323,6 +360,29 @@ const LiveEditor = ({ value, onChange, placeholder = "Mulai menulis..." }: LiveE
           autoCapitalize="sentences"
           autoCorrect="on"
         />
+
+        {/* Link tooltip */}
+        <AnimatePresence>
+          {linkTooltip && (
+            <motion.div
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 5 }}
+              transition={{ duration: 0.15 }}
+              className="fixed z-50 flex items-center gap-2 px-3 py-2 rounded-lg shadow-lg bg-card border border-border"
+              style={{ top: linkTooltip.y + 30, left: linkTooltip.x }}
+            >
+              <button
+                onClick={handleOpenLink}
+                className="flex items-center gap-2 text-sm text-primary hover:underline focus:outline-none"
+              >
+                <ExternalLink className="w-4 h-4" />
+                <span className="max-w-[200px] truncate">{linkTooltip.url}</span>
+              </button>
+              <span className="text-xs text-muted-foreground">(Ctrl+Enter)</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.div>
   );
