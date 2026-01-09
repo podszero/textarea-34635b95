@@ -347,13 +347,13 @@ const LiveEditor = ({ value, onChange, placeholder = "Mulai menulis..." }: LiveE
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
-      className="w-full min-h-screen safe-top bg-editor-bg"
+      className="w-full min-h-screen min-h-[100dvh] safe-top bg-editor-bg"
     >
-      <div ref={containerRef} className="live-editor-container relative w-full max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto">
+      <div ref={containerRef} className="live-editor-container relative w-full max-w-[95%] xs:max-w-[90%] sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto">
         {/* Highlight overlay */}
         <div
           ref={highlightRef}
-          className="live-highlight pointer-events-none whitespace-pre-wrap break-words px-4 py-6 sm:px-6 sm:py-10 md:px-10 md:py-14 lg:px-16 lg:py-16 xl:px-20"
+          className="live-highlight pointer-events-none whitespace-pre-wrap break-words px-5 py-8 xs:px-6 xs:py-10 sm:px-8 sm:py-12 md:px-12 md:py-16 lg:px-20 lg:py-20 xl:px-24 xl:py-24"
           aria-hidden="true"
         >
           {value ? processContent(value) : <span className="md-placeholder">{placeholder}</span>}
@@ -369,13 +369,13 @@ const LiveEditor = ({ value, onChange, placeholder = "Mulai menulis..." }: LiveE
           onClick={handleClick}
           onScroll={syncScroll}
           placeholder=""
-          className="live-textarea absolute inset-0 w-full h-full resize-none outline-none border-0 bg-transparent px-4 py-6 sm:px-6 sm:py-10 md:px-10 md:py-14 lg:px-16 lg:py-16 xl:px-20 pb-28 sm:pb-32"
+          className="live-textarea absolute inset-0 w-full h-full resize-none outline-none border-0 bg-transparent px-5 py-8 xs:px-6 xs:py-10 sm:px-8 sm:py-12 md:px-12 md:py-16 lg:px-20 lg:py-20 xl:px-24 xl:py-24 pb-24 xs:pb-28 sm:pb-32"
           spellCheck={false}
           autoComplete="off"
           autoCapitalize="sentences"
           autoCorrect="on"
           style={{
-            caretColor: 'hsl(35 100% 55%)',
+            caretColor: 'hsl(var(--editor-cursor))',
           }}
         />
 

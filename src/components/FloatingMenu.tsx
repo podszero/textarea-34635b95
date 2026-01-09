@@ -107,22 +107,22 @@ const FloatingMenu = ({
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3, delay: 0.2 }}
-      className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 md:bottom-6 md:right-6 z-50 safe-bottom"
+      className="fixed bottom-4 right-4 xs:bottom-5 xs:right-5 sm:bottom-6 sm:right-6 md:bottom-8 md:right-8 z-50 safe-bottom"
     >
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
             size="lg"
-            className="floating-menu h-11 w-11 sm:h-12 sm:w-12 md:h-14 md:w-14 rounded-full shadow-lg hover:shadow-xl active:scale-95 transition-all bg-primary text-primary-foreground hover:bg-primary/90 touch-manipulation"
+            className="floating-menu h-12 w-12 xs:h-13 xs:w-13 sm:h-14 sm:w-14 md:h-16 md:w-16 rounded-full shadow-xl hover:shadow-2xl active:scale-95 transition-all duration-200 bg-primary text-primary-foreground hover:bg-primary/90 touch-manipulation ring-2 ring-primary/20"
           >
-            <MoreVertical className="h-5 w-5 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+            <MoreVertical className="h-5 w-5 xs:h-5.5 xs:w-5.5 sm:h-6 sm:w-6 md:h-7 md:w-7" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="end"
           side="top"
-          sideOffset={12}
-          className="floating-menu w-48 sm:w-52 md:w-56 rounded-xl p-1.5 sm:p-2"
+          sideOffset={14}
+          className="floating-menu w-52 xs:w-56 sm:w-60 md:w-64 rounded-2xl p-2 xs:p-2.5 sm:p-3"
         >
           <motion.div
             initial={{ opacity: 0, y: 10 }}

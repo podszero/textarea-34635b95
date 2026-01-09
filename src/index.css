@@ -160,49 +160,96 @@
     background: hsl(var(--muted-foreground) / 0.3);
   }
 
-  /* Touch-friendly styles - Mobile */
-  @media (max-width: 480px) {
+  /* Touch-friendly styles - Extra Small Mobile */
+  @media (max-width: 479px) {
     .editor-textarea,
     .live-highlight,
     .live-textarea {
       font-size: 16px !important; /* Prevents iOS zoom on focus */
-      line-height: 1.7;
+      line-height: 1.75;
+      letter-spacing: 0.01em;
     }
   }
 
-  /* Tablet adjustments */
-  @media (min-width: 768px) and (max-width: 1024px) {
+  /* Small Mobile */
+  @media (min-width: 480px) and (max-width: 639px) {
     .editor-textarea,
     .live-highlight,
     .live-textarea {
-      font-size: 1.125rem;
+      font-size: 17px;
       line-height: 1.8;
     }
   }
 
-  /* Desktop adjustments */
-  @media (min-width: 1024px) {
+  /* Large Mobile / Small Tablet */
+  @media (min-width: 640px) and (max-width: 767px) {
+    .editor-textarea,
+    .live-highlight,
+    .live-textarea {
+      font-size: 18px;
+      line-height: 1.8;
+    }
+  }
+
+  /* Tablet */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .editor-textarea,
+    .live-highlight,
+    .live-textarea {
+      font-size: 1.125rem;
+      line-height: 1.85;
+    }
+  }
+
+  /* Small Desktop */
+  @media (min-width: 1024px) and (max-width: 1279px) {
     .editor-textarea,
     .live-highlight,
     .live-textarea {
       font-size: 1.25rem;
-      line-height: 1.85;
+      line-height: 1.9;
+    }
+  }
+
+  /* Large Desktop */
+  @media (min-width: 1280px) and (max-width: 1535px) {
+    .editor-textarea,
+    .live-highlight,
+    .live-textarea {
+      font-size: 1.375rem;
+      line-height: 1.9;
+    }
+  }
+
+  /* Extra Large Desktop */
+  @media (min-width: 1536px) {
+    .editor-textarea,
+    .live-highlight,
+    .live-textarea {
+      font-size: 1.5rem;
+      line-height: 1.95;
     }
   }
 
   /* Safe area insets for mobile */
   .safe-bottom {
-    padding-bottom: env(safe-area-inset-bottom, 12px);
+    padding-bottom: env(safe-area-inset-bottom, 16px);
   }
 
   .safe-top {
     padding-top: env(safe-area-inset-top, 0);
   }
 
-  /* Safe area for tablets in landscape */
+  /* Safe area for tablets and up */
   @media (min-width: 768px) {
     .safe-bottom {
-      padding-bottom: env(safe-area-inset-bottom, 16px);
+      padding-bottom: env(safe-area-inset-bottom, 20px);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .safe-bottom {
+      padding-bottom: env(safe-area-inset-bottom, 24px);
     }
   }
 
@@ -210,9 +257,9 @@
   .floating-menu {
     background: hsl(var(--menu-bg));
     box-shadow: 
-      0 4px 6px -1px hsl(var(--menu-shadow) / 0.08),
-      0 2px 4px -2px hsl(var(--menu-shadow) / 0.06),
-      0 0 0 1px hsl(var(--border) / 0.5);
+      0 8px 16px -4px hsl(var(--menu-shadow) / 0.12),
+      0 4px 8px -4px hsl(var(--menu-shadow) / 0.08),
+      0 0 0 1px hsl(var(--border) / 0.4);
   }
 
   /* Markdown preview styling */
@@ -493,8 +540,11 @@
     font-family: 'Lora', Georgia, serif;
     font-size: 1.125rem;
     line-height: 1.85;
-    letter-spacing: 0.01em;
-    word-spacing: 0;
+    letter-spacing: 0.015em;
+    word-spacing: 0.02em;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   .live-highlight {
