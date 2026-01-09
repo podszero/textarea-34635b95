@@ -190,103 +190,149 @@
   .markdown-preview {
     font-family: 'Lora', Georgia, serif;
     color: hsl(var(--editor-text));
-    line-height: 1.8;
+    line-height: 1.85;
+    max-width: 720px;
+  }
+
+  .markdown-preview > *:first-child {
+    margin-top: 0 !important;
   }
 
   .markdown-preview h1 {
-    @apply text-3xl font-bold mb-6 mt-8 first:mt-0;
+    @apply text-4xl font-bold mb-6 mt-12 pb-3;
     font-family: 'Inter', system-ui, sans-serif;
     color: hsl(var(--foreground));
+    border-bottom: 2px solid hsl(var(--border));
+    letter-spacing: -0.02em;
+  }
+
+  .markdown-preview h1:first-child {
+    margin-top: 0;
   }
 
   .markdown-preview h2 {
-    @apply text-2xl font-bold mb-4 mt-6;
+    @apply text-2xl font-bold mb-4 mt-10 pb-2;
     font-family: 'Inter', system-ui, sans-serif;
     color: hsl(var(--foreground));
+    border-bottom: 1px solid hsl(var(--border));
+    letter-spacing: -0.01em;
   }
 
   .markdown-preview h3 {
-    @apply text-xl font-semibold mb-3 mt-5;
+    @apply text-xl font-semibold mb-3 mt-8;
     font-family: 'Inter', system-ui, sans-serif;
     color: hsl(var(--foreground));
   }
 
   .markdown-preview h4 {
-    @apply text-lg font-semibold mb-3 mt-4;
+    @apply text-lg font-semibold mb-3 mt-6;
     font-family: 'Inter', system-ui, sans-serif;
     color: hsl(var(--editor-text));
   }
 
   .markdown-preview h5 {
-    @apply text-base font-semibold mb-2 mt-4;
+    @apply text-base font-semibold mb-2 mt-5;
     font-family: 'Inter', system-ui, sans-serif;
     color: hsl(var(--editor-text));
   }
 
   .markdown-preview h6 {
-    @apply text-sm font-semibold mb-2 mt-4 uppercase tracking-wide;
+    @apply text-sm font-semibold mb-2 mt-5 uppercase tracking-widest;
     font-family: 'Inter', system-ui, sans-serif;
     color: hsl(var(--muted-foreground));
   }
 
   .markdown-preview p {
-    @apply mb-4;
+    @apply mb-5 leading-relaxed;
+  }
+
+  .markdown-preview p + p {
+    @apply mt-0;
   }
 
   .markdown-preview ul, .markdown-preview ol {
-    @apply mb-4 pl-6;
+    @apply mb-5 pl-8 space-y-2;
   }
 
   .markdown-preview li {
-    @apply mb-2;
+    @apply leading-relaxed;
+    padding-left: 0.25rem;
   }
 
   .markdown-preview ul li {
     list-style-type: disc;
   }
 
+  .markdown-preview ul li::marker {
+    color: hsl(var(--primary));
+  }
+
   .markdown-preview ol li {
     list-style-type: decimal;
   }
 
-  .markdown-preview code {
-    @apply px-1.5 py-0.5 rounded text-sm;
-    background: hsl(var(--muted));
-    font-family: 'SF Mono', Monaco, monospace;
+  .markdown-preview ol li::marker {
     color: hsl(var(--primary));
+    font-weight: 600;
+  }
+
+  .markdown-preview code {
+    @apply px-2 py-1 rounded-md text-sm;
+    background: hsl(var(--muted));
+    font-family: 'SF Mono', Monaco, 'Consolas', monospace;
+    color: hsl(var(--primary));
+    font-weight: 500;
   }
 
   .markdown-preview pre {
-    @apply p-4 rounded-lg mb-4 overflow-x-auto;
-    background: hsl(var(--muted));
+    @apply p-5 rounded-xl mb-6 mt-2 overflow-x-auto;
+    background: hsl(30 12% 12%);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+
+  .dark .markdown-preview pre {
+    background: hsl(30 15% 6%);
+    border: 1px solid hsl(var(--border));
   }
 
   .markdown-preview pre code {
-    @apply p-0 bg-transparent;
-    color: hsl(var(--editor-text));
+    @apply p-0 bg-transparent text-sm;
+    color: hsl(40 15% 85%);
+    font-weight: 400;
+    line-height: 1.6;
   }
 
   .markdown-preview blockquote {
-    @apply pl-4 italic my-4;
-    border-left: 3px solid hsl(var(--primary));
+    @apply pl-5 py-3 my-6 rounded-r-lg;
+    border-left: 4px solid hsl(var(--primary));
+    background: hsl(var(--muted) / 0.4);
     color: hsl(var(--muted-foreground));
+    font-style: italic;
+  }
+
+  .markdown-preview blockquote p {
+    @apply mb-0;
   }
 
   .markdown-preview a {
     color: hsl(var(--primary));
     text-decoration: underline;
+    text-decoration-thickness: 1.5px;
     text-underline-offset: 3px;
     cursor: pointer;
-    transition: opacity 0.2s;
+    transition: all 0.2s ease;
+    font-weight: 500;
   }
 
   .markdown-preview a:hover {
-    opacity: 0.8;
+    text-decoration-thickness: 2px;
+    opacity: 0.85;
   }
 
   .markdown-preview hr {
-    @apply my-8;
-    border-color: hsl(var(--border));
+    @apply my-10 border-0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, hsl(var(--border)), transparent);
   }
 
   .markdown-preview strong {
@@ -296,11 +342,21 @@
 
   .markdown-preview em {
     @apply italic;
+    color: inherit;
   }
 
   .markdown-preview del {
     text-decoration: line-through;
+    text-decoration-thickness: 2px;
     color: hsl(var(--muted-foreground));
+  }
+
+  /* Nested lists */
+  .markdown-preview ul ul,
+  .markdown-preview ol ol,
+  .markdown-preview ul ol,
+  .markdown-preview ol ul {
+    @apply mt-2 mb-0;
   }
 
   /* Live Editor Container */
