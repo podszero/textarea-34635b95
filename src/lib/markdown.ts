@@ -1,3 +1,5 @@
+import hljs from 'highlight.js';
+
 // Simple markdown parser for preview
 export function parseMarkdown(text: string): string {
   if (!text) return '';
@@ -10,8 +12,18 @@ export function parseMarkdown(text: string): string {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
 
-  // Code blocks (must be before other replacements)
-  html = html.replace(/```[\w]*\n?([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+  // Code blocks with syntax highlighting (must be before other replacements)
+  html = html.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) => {
+    const trimmedCode = code.trim();
+    try {
+      const highlighted = lang && hljs.getLanguage(lang)
+        ? hljs.highlight(trimmedCode, { language: lang }).value
+        : hljs.highlightAuto(trimmedCode).value;
+      return `<pre><code class="hljs language-${lang || 'plaintext'}">${highlighted}</code></pre>`;
+    } catch {
+      return `<pre><code class="hljs">${trimmedCode}</code></pre>`;
+    }
+  });
 
   // Inline code
   html = html.replace(/`([^`]+)`/g, '<code>$1</code>');

@@ -550,6 +550,77 @@
   }
 }
 
+/* Highlight.js syntax highlighting theme */
+.hljs {
+  color: hsl(40 15% 85%);
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: hsl(30 8% 50%);
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-addition {
+  color: hsl(35 100% 65%);
+}
+
+.hljs-number,
+.hljs-string,
+.hljs-meta .hljs-meta-string,
+.hljs-literal,
+.hljs-doctag,
+.hljs-regexp {
+  color: hsl(150 60% 55%);
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+  color: hsl(200 80% 65%);
+}
+
+.hljs-attribute,
+.hljs-attr,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-class .hljs-title,
+.hljs-type {
+  color: hsl(30 90% 65%);
+}
+
+.hljs-symbol,
+.hljs-bullet,
+.hljs-subst,
+.hljs-meta,
+.hljs-meta .hljs-keyword,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-link {
+  color: hsl(340 80% 70%);
+}
+
+.hljs-built_in,
+.hljs-deletion {
+  color: hsl(0 70% 65%);
+}
+
+.hljs-formula {
+  background: hsl(30 12% 15%);
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
 /* Animation utilities */
 @layer utilities {
   .animate-fade-in {
