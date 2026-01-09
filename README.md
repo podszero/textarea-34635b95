@@ -1,73 +1,189 @@
-# Welcome to your Lovable project
+# ✍️ Markdown Editor Pro
 
-## Project info
+Editor Markdown modern dengan fitur lengkap, preview real-time, dan penyimpanan otomatis. Dibangun dengan React, TypeScript, dan Tailwind CSS.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+![Markdown Editor Preview](public/og-image.png)
 
-## How can I edit this code?
+## ✨ Fitur Utama
 
-There are several ways of editing your application.
+### 📝 Editor
+- **Live Preview** - Lihat hasil markdown secara real-time
+- **Syntax Highlighting** - Highlight kode dengan berbagai bahasa pemrograman
+- **Auto-save** - Dokumen tersimpan otomatis setiap perubahan
+- **URL Sharing** - Bagikan dokumen via URL dengan kompresi otomatis
 
-**Use Lovable**
+### 📋 Markdown Support
+- **Headers** (H1-H6)
+- **Bold, Italic, Strikethrough**
+- **Lists** (ordered & unordered)
+- **Checklist/Task List** dengan checkbox interaktif ✅
+- **Code Blocks** dengan syntax highlighting
+- **Tables** dengan alignment
+- **Links & Images**
+- **Blockquotes**
+- **Horizontal Rules**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+### 🖼️ Image Lightbox
+- Klik gambar untuk memperbesar
+- Zoom in/out dengan tombol atau keyboard (+/-)
+- Rotate gambar (R)
+- Navigasi dengan keyboard (Esc untuk tutup)
 
-Changes made via Lovable will be committed automatically to this repo.
+### 📂 Manajemen Dokumen
+- Simpan multiple dokumen
+- Rename dokumen
+- Delete dokumen
+- Export ke HTML, TXT, atau Markdown
+- Backup & restore semua dokumen
 
-**Use your preferred IDE**
+### 🎨 Tema
+- **Light Mode** - Tampilan terang
+- **Dark Mode** - Tampilan gelap
+- **System** - Mengikuti preferensi sistem
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 📱 Responsive Design
+- Desktop, tablet, dan mobile friendly
+- Floating menu untuk akses cepat
+- QR Code sharing untuk akses mobile
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🚀 Cara Penggunaan
 
-Follow these steps:
+### Instalasi
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+```bash
+# Clone repository
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
+# Masuk ke direktori project
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Jalankan development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Keyboard Shortcuts
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+| Shortcut | Aksi |
+|----------|------|
+| `Esc` | Tutup lightbox/modal |
+| `+` / `=` | Zoom in gambar |
+| `-` | Zoom out gambar |
+| `R` | Rotate gambar |
 
-**Use GitHub Codespaces**
+### Contoh Markdown
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```markdown
+# Judul Dokumen
 
-## What technologies are used for this project?
+## Checklist
+- [x] Task yang sudah selesai
+- [ ] Task yang belum selesai
 
-This project is built with:
+## Kode
+\`\`\`javascript
+console.log('Hello World!');
+\`\`\`
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Tabel
+| Nama | Nilai |
+|------|-------|
+| A    | 100   |
+| B    | 90    |
 
-## How can I deploy this project?
+## Gambar
+![Alt text](https://example.com/image.png)
+```
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+## 🛠️ Tech Stack
 
-## Can I connect a custom domain to my Lovable project?
+- **Frontend Framework**: React 18
+- **Build Tool**: Vite
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **UI Components**: shadcn/ui
+- **Animations**: Framer Motion
+- **Icons**: Lucide React
+- **Syntax Highlighting**: Highlight.js
+- **Compression**: Pako (untuk URL sharing)
+- **QR Code**: qrcode.react
 
-Yes, you can!
+## 📁 Struktur Project
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+```
+src/
+├── components/
+│   ├── ui/              # shadcn/ui components
+│   ├── Editor.tsx       # Komponen editor
+│   ├── MarkdownPreview.tsx  # Preview markdown
+│   ├── ImageLightbox.tsx    # Lightbox untuk gambar
+│   ├── FloatingMenu.tsx     # Menu floating
+│   ├── DocumentsSidebar.tsx # Sidebar dokumen
+│   ├── StatusBar.tsx        # Status bar
+│   └── QRModal.tsx          # Modal QR code
+├── hooks/
+│   ├── useDocument.ts   # Hook untuk dokumen
+│   ├── useDocuments.ts  # Hook untuk list dokumen
+│   └── useTheme.ts      # Hook untuk tema
+├── lib/
+│   ├── markdown.ts      # Parser markdown
+│   ├── compression.ts   # Utilitas kompresi
+│   ├── storage.ts       # Local storage
+│   └── utils.ts         # Utilitas umum
+├── pages/
+│   └── Index.tsx        # Halaman utama
+└── index.css            # Global styles
+```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## 🔧 Konfigurasi
+
+### Environment Variables
+
+Tidak ada environment variables yang diperlukan untuk menjalankan aplikasi ini secara lokal.
+
+### Customization
+
+- **Tema**: Edit `src/index.css` untuk mengubah warna dan styling
+- **Markdown Parser**: Edit `src/lib/markdown.ts` untuk menambah fitur markdown
+- **Komponen UI**: Semua komponen ada di `src/components/`
+
+## 📦 Build & Deploy
+
+```bash
+# Build untuk production
+npm run build
+
+# Preview build
+npm run preview
+```
+
+### Deploy ke Lovable
+
+1. Buka project di Lovable
+2. Klik **Share** → **Publish**
+3. Aplikasi akan live di URL Lovable
+
+## 🤝 Kontribusi
+
+1. Fork repository
+2. Buat branch fitur (`git checkout -b feature/AmazingFeature`)
+3. Commit perubahan (`git commit -m 'Add some AmazingFeature'`)
+4. Push ke branch (`git push origin feature/AmazingFeature`)
+5. Buat Pull Request
+
+## 📄 Lisensi
+
+Distributed under the MIT License.
+
+## 🙏 Credits
+
+- [shadcn/ui](https://ui.shadcn.com/) - Komponen UI
+- [Highlight.js](https://highlightjs.org/) - Syntax highlighting
+- [Framer Motion](https://www.framer.com/motion/) - Animasi
+- [Lucide](https://lucide.dev/) - Icons
+
+---
+
+**Made with ❤️ using [Lovable](https://lovable.dev)**
