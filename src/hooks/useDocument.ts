@@ -5,6 +5,7 @@ import {
   extractTitle,
 } from '@/lib/compression';
 import { parseMarkdown } from '@/lib/markdown';
+import { saveToIndexedDB, loadFromIndexedDB, clearIndexedDB } from '@/lib/storage';
 
 const STORAGE_KEY = 'textarea-content';
 const SAVE_DELAY = 500;
@@ -15,18 +16,23 @@ export function useDocument() {
 
   // Load content on mount
   useEffect(() => {
-    const hashContent = getHashContent();
-    const storedContent = localStorage.getItem(STORAGE_KEY) || '';
-    
-    // Prioritize hash content, fallback to localStorage
-    const initialContent = hashContent || storedContent;
-    setContent(initialContent);
-    setIsLoaded(true);
+    const loadContent = async () => {
+      const hashContent = getHashContent();
+      const localContent = localStorage.getItem(STORAGE_KEY) || '';
+      const indexedContent = await loadFromIndexedDB();
 
-    // If we loaded from localStorage but no hash, set the hash
-    if (!hashContent && storedContent) {
-      setHashContent(storedContent);
-    }
+      // Priority: URL hash > localStorage > IndexedDB
+      const initialContent = hashContent || localContent || indexedContent || '';
+      setContent(initialContent);
+      setIsLoaded(true);
+
+      // Sync to hash if loaded from storage
+      if (!hashContent && initialContent) {
+        setHashContent(initialContent);
+      }
+    };
+
+    loadContent();
   }, []);
 
   // Save content with debounce
@@ -34,10 +40,12 @@ export function useDocument() {
     if (!isLoaded) return;
 
     const timeoutId = setTimeout(() => {
+      // Save to all storage mechanisms
       localStorage.setItem(STORAGE_KEY, content);
+      saveToIndexedDB(content);
       setHashContent(content);
-      
-      // Update page title
+
+      // Update page title from first # heading
       const title = extractTitle(content);
       document.title = title || 'Catatan';
     }, SAVE_DELAY);
@@ -61,6 +69,7 @@ export function useDocument() {
   const handleNew = useCallback(() => {
     setContent('');
     localStorage.removeItem(STORAGE_KEY);
+    clearIndexedDB();
     window.history.replaceState(null, '', window.location.pathname);
     document.title = 'Catatan';
   }, []);
