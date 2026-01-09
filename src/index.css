@@ -194,18 +194,39 @@
   }
 
   .markdown-preview h1 {
-    @apply text-3xl font-semibold mb-6 mt-8 first:mt-0;
+    @apply text-3xl font-bold mb-6 mt-8 first:mt-0;
     font-family: 'Inter', system-ui, sans-serif;
+    color: hsl(var(--foreground));
   }
 
   .markdown-preview h2 {
-    @apply text-2xl font-semibold mb-4 mt-6;
+    @apply text-2xl font-bold mb-4 mt-6;
     font-family: 'Inter', system-ui, sans-serif;
+    color: hsl(var(--foreground));
   }
 
   .markdown-preview h3 {
-    @apply text-xl font-medium mb-3 mt-5;
+    @apply text-xl font-semibold mb-3 mt-5;
     font-family: 'Inter', system-ui, sans-serif;
+    color: hsl(var(--foreground));
+  }
+
+  .markdown-preview h4 {
+    @apply text-lg font-semibold mb-3 mt-4;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: hsl(var(--editor-text));
+  }
+
+  .markdown-preview h5 {
+    @apply text-base font-semibold mb-2 mt-4;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: hsl(var(--editor-text));
+  }
+
+  .markdown-preview h6 {
+    @apply text-sm font-semibold mb-2 mt-4 uppercase tracking-wide;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: hsl(var(--muted-foreground));
   }
 
   .markdown-preview p {
@@ -232,6 +253,7 @@
     @apply px-1.5 py-0.5 rounded text-sm;
     background: hsl(var(--muted));
     font-family: 'SF Mono', Monaco, monospace;
+    color: hsl(var(--primary));
   }
 
   .markdown-preview pre {
@@ -241,6 +263,7 @@
 
   .markdown-preview pre code {
     @apply p-0 bg-transparent;
+    color: hsl(var(--editor-text));
   }
 
   .markdown-preview blockquote {
@@ -253,6 +276,12 @@
     color: hsl(var(--primary));
     text-decoration: underline;
     text-underline-offset: 3px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .markdown-preview a:hover {
+    opacity: 0.8;
   }
 
   .markdown-preview hr {
@@ -261,11 +290,17 @@
   }
 
   .markdown-preview strong {
-    @apply font-semibold;
+    @apply font-bold;
+    color: hsl(var(--foreground));
   }
 
   .markdown-preview em {
     @apply italic;
+  }
+
+  .markdown-preview del {
+    text-decoration: line-through;
+    color: hsl(var(--muted-foreground));
   }
 
   /* Live Editor Container */
