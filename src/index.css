@@ -266,12 +266,17 @@
     @apply italic;
   }
 
+  /* Live Editor Container */
+  .live-editor-container {
+    position: relative;
+  }
+
   /* Live Editor - Overlay approach */
   .live-highlight,
   .live-textarea {
     font-family: 'Lora', Georgia, serif;
     font-size: 1.125rem;
-    line-height: 1.8;
+    line-height: 1.85;
     letter-spacing: 0.01em;
   }
 
@@ -291,9 +296,10 @@
     background: hsl(var(--editor-selection));
   }
 
-  /* Markdown syntax - dimmed */
+  /* Markdown syntax - dimmed orange/amber */
   .md-syntax {
-    opacity: 0.4;
+    color: hsl(var(--primary));
+    opacity: 0.5;
   }
 
   /* Placeholder */
@@ -302,7 +308,7 @@
     font-style: italic;
   }
 
-  /* Headings - bold text only, same size */
+  /* Headings - bold text, same font size */
   .md-h1, .md-h2 {
     font-weight: 700;
   }
@@ -311,34 +317,63 @@
     font-weight: 600;
   }
 
+  /* Bold */
+  .md-bold strong {
+    font-weight: 700;
+  }
+
+  /* Italic */
+  .md-italic em {
+    font-style: italic;
+  }
+
+  /* Strikethrough */
+  .md-strike del {
+    text-decoration: line-through;
+  }
+
   /* Inline code */
   .md-inline-code {
     font-family: 'SF Mono', Monaco, 'Consolas', monospace;
-    font-size: 0.95em;
-    background: hsl(var(--muted) / 0.4);
-    padding: 0.1em 0.2em;
-    border-radius: 3px;
+    font-size: 0.9em;
+    background: hsl(var(--muted) / 0.5);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    margin: 0 0.1em;
+  }
+
+  .md-code-text {
+    color: hsl(var(--primary));
   }
 
   /* Code fence */
   .md-code-fence {
-    color: hsl(var(--primary) / 0.7);
     font-family: 'SF Mono', Monaco, 'Consolas', monospace;
-    font-size: 0.95em;
+    font-size: 0.9em;
+  }
+
+  .md-code-lang {
+    color: hsl(var(--primary));
   }
 
   /* Code content */
   .md-code-content {
     font-family: 'SF Mono', Monaco, 'Consolas', monospace;
-    font-size: 0.95em;
-    color: hsl(var(--editor-text) / 0.9);
+    font-size: 0.9em;
+    color: hsl(var(--editor-text));
+    padding-left: 0.5rem;
   }
 
   /* Link */
   .md-link {
     color: hsl(var(--primary));
     text-decoration: underline;
-    text-underline-offset: 2px;
+    text-underline-offset: 3px;
+    pointer-events: auto;
+  }
+
+  .md-link:hover {
+    opacity: 0.8;
   }
 
   /* Mobile */
@@ -346,7 +381,7 @@
     .live-highlight,
     .live-textarea {
       font-size: 16px !important;
-      line-height: 1.7;
+      line-height: 1.75;
     }
   }
 }

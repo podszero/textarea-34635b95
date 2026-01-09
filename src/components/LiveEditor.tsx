@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect, useState } from 'react';
+import { useRef, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 interface LiveEditorProps {
@@ -22,104 +22,74 @@ const renderLine = (line: string, lineIndex: number, inCodeBlock: boolean): Reac
     return (
       <span key={lineIndex} className="md-code-fence">
         <span className="md-syntax">```</span>
-        <span>{lang}</span>
+        <span className="md-code-lang">{lang}</span>
       </span>
     );
   }
 
-  // Headings
-  const h6Match = line.match(/^(######\s)(.*)$/);
-  if (h6Match) {
+  // Headings - check from most specific (######) to least (#)
+  const headingMatch = line.match(/^(#{1,6})\s(.*)$/);
+  if (headingMatch) {
+    const level = headingMatch[1].length;
+    const hashes = headingMatch[1];
+    const content = headingMatch[2];
     return (
       <span key={lineIndex}>
-        <span className="md-syntax">{h6Match[1]}</span>
-        <span className="md-h6">{parseInline(h6Match[2])}</span>
-      </span>
-    );
-  }
-
-  const h5Match = line.match(/^(#####\s)(.*)$/);
-  if (h5Match) {
-    return (
-      <span key={lineIndex}>
-        <span className="md-syntax">{h5Match[1]}</span>
-        <span className="md-h5">{parseInline(h5Match[2])}</span>
-      </span>
-    );
-  }
-
-  const h4Match = line.match(/^(####\s)(.*)$/);
-  if (h4Match) {
-    return (
-      <span key={lineIndex}>
-        <span className="md-syntax">{h4Match[1]}</span>
-        <span className="md-h4">{parseInline(h4Match[2])}</span>
-      </span>
-    );
-  }
-
-  const h3Match = line.match(/^(###\s)(.*)$/);
-  if (h3Match) {
-    return (
-      <span key={lineIndex}>
-        <span className="md-syntax">{h3Match[1]}</span>
-        <span className="md-h3">{parseInline(h3Match[2])}</span>
-      </span>
-    );
-  }
-
-  const h2Match = line.match(/^(##\s)(.*)$/);
-  if (h2Match) {
-    return (
-      <span key={lineIndex}>
-        <span className="md-syntax">{h2Match[1]}</span>
-        <span className="md-h2">{parseInline(h2Match[2])}</span>
-      </span>
-    );
-  }
-
-  const h1Match = line.match(/^(#\s)(.*)$/);
-  if (h1Match) {
-    return (
-      <span key={lineIndex}>
-        <span className="md-syntax">{h1Match[1]}</span>
-        <span className="md-h1">{parseInline(h1Match[2])}</span>
+        <span className="md-syntax">{hashes} </span>
+        <span className={`md-h${level}`}>{parseInline(content)}</span>
       </span>
     );
   }
 
   // Regular line
-  return <span key={lineIndex}>{parseInline(line) || '\u00A0'}</span>;
+  if (!line) {
+    return <span key={lineIndex}>{'\u00A0'}</span>;
+  }
+  
+  return <span key={lineIndex}>{parseInline(line)}</span>;
 };
 
-// Parse inline formatting
+// Parse inline formatting - optimized to batch regular text
 const parseInline = (text: string): React.ReactNode[] => {
-  if (!text) return [];
+  if (!text) return ['\u00A0'];
 
   const elements: React.ReactNode[] = [];
   let remaining = text;
   let keyIndex = 0;
+  let regularText = '';
+
+  const flushRegularText = () => {
+    if (regularText) {
+      elements.push(<span key={keyIndex++}>{regularText}</span>);
+      regularText = '';
+    }
+  };
 
   while (remaining.length > 0) {
     // Inline code `code`
-    const codeMatch = remaining.match(/^(`[^`]+`)/);
+    const codeMatch = remaining.match(/^`([^`]+)`/);
     if (codeMatch) {
-      const code = codeMatch[1];
+      flushRegularText();
       elements.push(
-        <span key={keyIndex++} className="md-inline-code">{code}</span>
+        <span key={keyIndex++} className="md-inline-code">
+          <span className="md-syntax">`</span>
+          <span className="md-code-text">{codeMatch[1]}</span>
+          <span className="md-syntax">`</span>
+        </span>
       );
-      remaining = remaining.slice(code.length);
+      remaining = remaining.slice(codeMatch[0].length);
       continue;
     }
 
     // Bold **text**
-    const boldMatch = remaining.match(/^(\*\*)([^*]+)(\*\*)/);
+    const boldMatch = remaining.match(/^\*\*([^*]+)\*\*/);
     if (boldMatch) {
+      flushRegularText();
       elements.push(
-        <span key={keyIndex++}>
-          <span className="md-syntax">{boldMatch[1]}</span>
-          <strong className="font-bold">{boldMatch[2]}</strong>
-          <span className="md-syntax">{boldMatch[3]}</span>
+        <span key={keyIndex++} className="md-bold">
+          <span className="md-syntax">**</span>
+          <strong>{boldMatch[1]}</strong>
+          <span className="md-syntax">**</span>
         </span>
       );
       remaining = remaining.slice(boldMatch[0].length);
@@ -127,27 +97,29 @@ const parseInline = (text: string): React.ReactNode[] => {
     }
 
     // Strikethrough ~~text~~
-    const strikeMatch = remaining.match(/^(~~)([^~]+)(~~)/);
+    const strikeMatch = remaining.match(/^~~([^~]+)~~/);
     if (strikeMatch) {
+      flushRegularText();
       elements.push(
-        <span key={keyIndex++}>
-          <span className="md-syntax">{strikeMatch[1]}</span>
-          <del className="line-through">{strikeMatch[2]}</del>
-          <span className="md-syntax">{strikeMatch[3]}</span>
+        <span key={keyIndex++} className="md-strike">
+          <span className="md-syntax">~~</span>
+          <del>{strikeMatch[1]}</del>
+          <span className="md-syntax">~~</span>
         </span>
       );
       remaining = remaining.slice(strikeMatch[0].length);
       continue;
     }
 
-    // Italic *text*
-    const italicMatch = remaining.match(/^(\*)([^*]+)(\*)/);
-    if (italicMatch) {
+    // Italic *text* (but not **)
+    const italicMatch = remaining.match(/^\*([^*]+)\*/);
+    if (italicMatch && !remaining.startsWith('**')) {
+      flushRegularText();
       elements.push(
-        <span key={keyIndex++}>
-          <span className="md-syntax">{italicMatch[1]}</span>
-          <em className="italic">{italicMatch[2]}</em>
-          <span className="md-syntax">{italicMatch[3]}</span>
+        <span key={keyIndex++} className="md-italic">
+          <span className="md-syntax">*</span>
+          <em>{italicMatch[1]}</em>
+          <span className="md-syntax">*</span>
         </span>
       );
       remaining = remaining.slice(italicMatch[0].length);
@@ -157,18 +129,28 @@ const parseInline = (text: string): React.ReactNode[] => {
     // URL
     const urlMatch = remaining.match(/^(https?:\/\/[^\s]+)/);
     if (urlMatch) {
+      flushRegularText();
       elements.push(
-        <span key={keyIndex++} className="md-link">{urlMatch[1]}</span>
+        <a 
+          key={keyIndex++} 
+          href={urlMatch[1]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="md-link"
+        >
+          {urlMatch[1]}
+        </a>
       );
       remaining = remaining.slice(urlMatch[1].length);
       continue;
     }
 
-    // Regular character
-    elements.push(<span key={keyIndex++}>{remaining[0]}</span>);
+    // Accumulate regular characters
+    regularText += remaining[0];
     remaining = remaining.slice(1);
   }
 
+  flushRegularText();
   return elements;
 };
 
@@ -211,9 +193,14 @@ const LiveEditor = ({ value, onChange, placeholder = "Mulai menulis..." }: LiveE
   // Auto-resize
   const adjustHeight = useCallback(() => {
     const textarea = textareaRef.current;
+    const highlight = highlightRef.current;
     if (textarea) {
       textarea.style.height = 'auto';
-      textarea.style.height = `${Math.max(textarea.scrollHeight, window.innerHeight - 200)}px`;
+      const newHeight = Math.max(textarea.scrollHeight, window.innerHeight - 100);
+      textarea.style.height = `${newHeight}px`;
+      if (highlight) {
+        highlight.style.minHeight = `${newHeight}px`;
+      }
     }
   }, []);
 
@@ -258,17 +245,17 @@ const LiveEditor = ({ value, onChange, placeholder = "Mulai menulis..." }: LiveE
       transition={{ duration: 0.4, ease: 'easeOut' }}
       className="w-full min-h-screen safe-top bg-editor-bg"
     >
-      <div className="relative max-w-3xl mx-auto">
+      <div className="live-editor-container relative max-w-3xl mx-auto">
         {/* Highlight overlay */}
         <div
           ref={highlightRef}
-          className="live-highlight absolute inset-0 pointer-events-none overflow-hidden whitespace-pre-wrap break-words px-4 py-8 sm:px-6 sm:py-12 md:px-12 md:py-16 lg:px-20 lg:py-20"
+          className="live-highlight pointer-events-none whitespace-pre-wrap break-words px-4 py-8 sm:px-6 sm:py-12 md:px-12 md:py-16 lg:px-20 lg:py-20"
           aria-hidden="true"
         >
           {value ? processContent(value) : <span className="md-placeholder">{placeholder}</span>}
         </div>
 
-        {/* Textarea */}
+        {/* Textarea - positioned absolutely over the highlight */}
         <textarea
           ref={textareaRef}
           value={value}
@@ -276,7 +263,7 @@ const LiveEditor = ({ value, onChange, placeholder = "Mulai menulis..." }: LiveE
           onKeyDown={handleKeyDown}
           onScroll={syncScroll}
           placeholder=""
-          className="live-textarea relative w-full min-h-screen resize-none outline-none border-0 bg-transparent px-4 py-8 sm:px-6 sm:py-12 md:px-12 md:py-16 lg:px-20 lg:py-20 pb-32"
+          className="live-textarea absolute inset-0 w-full h-full resize-none outline-none border-0 bg-transparent px-4 py-8 sm:px-6 sm:py-12 md:px-12 md:py-16 lg:px-20 lg:py-20 pb-32"
           spellCheck={false}
           autoComplete="off"
           autoCapitalize="sentences"
