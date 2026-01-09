@@ -2,7 +2,6 @@ import { motion } from 'framer-motion';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { parseMarkdown } from '@/lib/markdown';
 import ImageLightbox from './ImageLightbox';
-import mermaid from 'mermaid';
 
 interface MarkdownPreviewProps {
   content: string;
@@ -14,27 +13,6 @@ interface LightboxState {
   alt: string;
 }
 
-// Initialize mermaid
-mermaid.initialize({
-  startOnLoad: false,
-  theme: 'dark',
-  securityLevel: 'loose',
-  fontFamily: 'Inter, system-ui, sans-serif',
-  flowchart: {
-    htmlLabels: true,
-    curve: 'basis',
-  },
-  sequence: {
-    diagramMarginX: 20,
-    diagramMarginY: 20,
-    actorMargin: 50,
-    width: 150,
-    height: 65,
-    boxMargin: 10,
-    useMaxWidth: true,
-  },
-});
-
 const MarkdownPreview = ({ content }: MarkdownPreviewProps) => {
   const html = parseMarkdown(content);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -44,7 +22,6 @@ const MarkdownPreview = ({ content }: MarkdownPreviewProps) => {
     src: '',
     alt: ''
   });
-  const [mermaidKey, setMermaidKey] = useState(0);
 
   const handleCopyCode = useCallback(async (code: string, index: number) => {
     try {
@@ -64,46 +41,66 @@ const MarkdownPreview = ({ content }: MarkdownPreviewProps) => {
     setLightbox(prev => ({ ...prev, isOpen: false }));
   }, []);
 
-  // Render Mermaid diagrams
+  // Render Mermaid diagrams with dynamic import
   useEffect(() => {
     if (!containerRef.current) return;
 
     const renderMermaidDiagrams = async () => {
-      const mermaidDivs = containerRef.current?.querySelectorAll('.mermaid-diagram');
+      const mermaidDivs = containerRef.current?.querySelectorAll('.mermaid-diagram:not(.mermaid-rendered)');
       if (!mermaidDivs || mermaidDivs.length === 0) return;
 
-      // Check if dark mode
-      const isDark = document.documentElement.classList.contains('dark');
-      mermaid.initialize({
-        startOnLoad: false,
-        theme: isDark ? 'dark' : 'default',
-        securityLevel: 'loose',
-        fontFamily: 'Inter, system-ui, sans-serif',
-      });
-
-      for (let i = 0; i < mermaidDivs.length; i++) {
-        const div = mermaidDivs[i] as HTMLElement;
-        const code = decodeURIComponent(div.getAttribute('data-mermaid') || '');
+      try {
+        // Dynamic import to avoid React conflicts
+        const mermaid = await import('mermaid');
         
-        if (!code || div.classList.contains('mermaid-rendered')) continue;
+        // Check if dark mode
+        const isDark = document.documentElement.classList.contains('dark');
+        mermaid.default.initialize({
+          startOnLoad: false,
+          theme: isDark ? 'dark' : 'default',
+          securityLevel: 'loose',
+          fontFamily: 'Inter, system-ui, sans-serif',
+          flowchart: {
+            htmlLabels: true,
+            curve: 'basis',
+          },
+          sequence: {
+            diagramMarginX: 20,
+            diagramMarginY: 20,
+            actorMargin: 50,
+            width: 150,
+            height: 65,
+            boxMargin: 10,
+            useMaxWidth: true,
+          },
+        });
 
-        try {
-          const id = `mermaid-${Date.now()}-${i}`;
-          const { svg } = await mermaid.render(id, code);
-          div.innerHTML = svg;
-          div.classList.add('mermaid-rendered');
-        } catch (error) {
-          console.error('Mermaid render error:', error);
-          div.innerHTML = `<div class="mermaid-error">Diagram error: Invalid syntax</div>`;
-          div.classList.add('mermaid-rendered');
+        for (let i = 0; i < mermaidDivs.length; i++) {
+          const div = mermaidDivs[i] as HTMLElement;
+          const code = decodeURIComponent(div.getAttribute('data-mermaid') || '');
+          
+          if (!code) continue;
+
+          try {
+            const id = `mermaid-${Date.now()}-${i}`;
+            const { svg } = await mermaid.default.render(id, code);
+            div.innerHTML = svg;
+            div.classList.add('mermaid-rendered');
+          } catch (error) {
+            console.error('Mermaid render error:', error);
+            div.innerHTML = `<div class="mermaid-error">Diagram error: Invalid syntax</div>`;
+            div.classList.add('mermaid-rendered');
+          }
         }
+      } catch (error) {
+        console.error('Failed to load mermaid:', error);
       }
     };
 
     // Slight delay to ensure DOM is ready
     const timer = setTimeout(renderMermaidDiagrams, 100);
     return () => clearTimeout(timer);
-  }, [html, mermaidKey]);
+  }, [html]);
 
   useEffect(() => {
     if (!containerRef.current) return;
