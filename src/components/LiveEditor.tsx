@@ -349,11 +349,11 @@ const LiveEditor = ({ value, onChange, placeholder = "Mulai menulis..." }: LiveE
       transition={{ duration: 0.4, ease: 'easeOut' }}
       className="w-full min-h-screen safe-top bg-editor-bg"
     >
-      <div ref={containerRef} className="live-editor-container relative max-w-3xl mx-auto">
+      <div ref={containerRef} className="live-editor-container relative w-full max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto">
         {/* Highlight overlay */}
         <div
           ref={highlightRef}
-          className="live-highlight pointer-events-none whitespace-pre-wrap break-words px-4 py-8 sm:px-6 sm:py-12 md:px-12 md:py-16 lg:px-20 lg:py-20"
+          className="live-highlight pointer-events-none whitespace-pre-wrap break-words px-4 py-6 sm:px-6 sm:py-10 md:px-10 md:py-14 lg:px-16 lg:py-16 xl:px-20"
           aria-hidden="true"
         >
           {value ? processContent(value) : <span className="md-placeholder">{placeholder}</span>}
@@ -369,7 +369,7 @@ const LiveEditor = ({ value, onChange, placeholder = "Mulai menulis..." }: LiveE
           onClick={handleClick}
           onScroll={syncScroll}
           placeholder=""
-          className="live-textarea absolute inset-0 w-full h-full resize-none outline-none border-0 bg-transparent px-4 py-8 sm:px-6 sm:py-12 md:px-12 md:py-16 lg:px-20 lg:py-20 pb-32"
+          className="live-textarea absolute inset-0 w-full h-full resize-none outline-none border-0 bg-transparent px-4 py-6 sm:px-6 sm:py-10 md:px-10 md:py-14 lg:px-16 lg:py-16 xl:px-20 pb-28 sm:pb-32"
           spellCheck={false}
           autoComplete="off"
           autoCapitalize="sentences"

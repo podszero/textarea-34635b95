@@ -14,12 +14,12 @@ const StatusBar = ({ content, isPreview }: StatusBarProps) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: 0.3 }}
-      className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-50 flex items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground font-sans safe-bottom bg-background/80 backdrop-blur-sm px-3 py-1.5 rounded-full"
+      className="fixed bottom-3 left-3 sm:bottom-4 sm:left-4 md:bottom-6 md:left-6 z-50 flex items-center gap-2 sm:gap-3 md:gap-4 text-xs sm:text-sm text-muted-foreground font-sans safe-bottom bg-background/80 backdrop-blur-sm px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-full border border-border/50"
     >
-      <span>{words} kata</span>
+      <span className="tabular-nums">{words} kata</span>
       <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
-      <span className="hidden sm:inline">{chars} karakter</span>
-      <span className="sm:hidden">{chars} chr</span>
+      <span className="hidden xs:inline tabular-nums">{chars} karakter</span>
+      <span className="xs:hidden tabular-nums">{chars}</span>
       {isPreview && (
         <>
           <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />

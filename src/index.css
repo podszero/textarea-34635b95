@@ -160,21 +160,50 @@
     background: hsl(var(--muted-foreground) / 0.3);
   }
 
-  /* Touch-friendly styles */
-  @media (max-width: 640px) {
-    .editor-textarea {
+  /* Touch-friendly styles - Mobile */
+  @media (max-width: 480px) {
+    .editor-textarea,
+    .live-highlight,
+    .live-textarea {
       font-size: 16px !important; /* Prevents iOS zoom on focus */
       line-height: 1.7;
     }
   }
 
+  /* Tablet adjustments */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .editor-textarea,
+    .live-highlight,
+    .live-textarea {
+      font-size: 1.125rem;
+      line-height: 1.8;
+    }
+  }
+
+  /* Desktop adjustments */
+  @media (min-width: 1024px) {
+    .editor-textarea,
+    .live-highlight,
+    .live-textarea {
+      font-size: 1.25rem;
+      line-height: 1.85;
+    }
+  }
+
   /* Safe area insets for mobile */
   .safe-bottom {
-    padding-bottom: env(safe-area-inset-bottom, 16px);
+    padding-bottom: env(safe-area-inset-bottom, 12px);
   }
 
   .safe-top {
     padding-top: env(safe-area-inset-top, 0);
+  }
+
+  /* Safe area for tablets in landscape */
+  @media (min-width: 768px) {
+    .safe-bottom {
+      padding-bottom: env(safe-area-inset-bottom, 16px);
+    }
   }
 
   /* Floating menu styling */
@@ -191,8 +220,7 @@
     font-family: 'Lora', Georgia, serif;
     color: hsl(var(--editor-text));
     line-height: 1.9;
-    max-width: 780px;
-    margin: 0 auto;
+    width: 100%;
   }
 
   .markdown-preview > *:first-child {
@@ -635,12 +663,21 @@
     opacity: 0.8;
   }
 
-  /* Mobile */
-  @media (max-width: 640px) {
+  /* Mobile adjustments for live editor */
+  @media (max-width: 480px) {
     .live-highlight,
     .live-textarea {
       font-size: 16px !important;
       line-height: 1.75;
+    }
+  }
+
+  /* Tablet adjustments for live editor */
+  @media (min-width: 481px) and (max-width: 768px) {
+    .live-highlight,
+    .live-textarea {
+      font-size: 1rem;
+      line-height: 1.8;
     }
   }
 }
