@@ -29,6 +29,7 @@ interface FloatingMenuProps {
   onShare: () => void;
   onDownloadHtml: () => void;
   onDownloadText: () => void;
+  onDownloadMarkdown: () => void;
   onShowQR: () => void;
   isPreview: boolean;
   onTogglePreview: () => void;
@@ -42,6 +43,7 @@ const FloatingMenu = ({
   onShare,
   onDownloadHtml,
   onDownloadText,
+  onDownloadMarkdown,
   onShowQR,
   isPreview,
   onTogglePreview,
@@ -225,6 +227,14 @@ const FloatingMenu = ({
             </DropdownMenuItem>
 
             <DropdownMenuSeparator className="my-1.5 sm:my-2" />
+
+            <DropdownMenuItem
+              onClick={onDownloadMarkdown}
+              className="flex items-center gap-3 py-2.5 sm:py-3 px-3 rounded-lg cursor-pointer touch-manipulation"
+            >
+              <Download className="h-4 w-4" />
+              <span>Unduh MD</span>
+            </DropdownMenuItem>
 
             <DropdownMenuItem
               onClick={onDownloadHtml}

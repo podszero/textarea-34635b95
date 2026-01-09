@@ -20,6 +20,7 @@ const Index = () => {
     handleNew,
     handleDownloadHtml,
     handleDownloadText,
+    handleDownloadMarkdown,
   } = useDocument();
 
   const { isDark, toggleTheme } = useTheme();
@@ -83,6 +84,7 @@ Ketik apa saja dan otomatis tersimpan ke URL."
         onShare={handleShare}
         onDownloadHtml={handleDownloadHtml}
         onDownloadText={handleDownloadText}
+        onDownloadMarkdown={handleDownloadMarkdown}
         onShowQR={() => setShowQR(true)}
         isPreview={isPreview}
         onTogglePreview={togglePreview}

@@ -123,6 +123,17 @@ ${parseMarkdown(content)}
     URL.revokeObjectURL(url);
   }, [content]);
 
+  const handleDownloadMarkdown = useCallback(() => {
+    const title = extractTitle(content) || 'dokumen';
+    const blob = new Blob([content], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [content]);
+
   return {
     content,
     setContent,
@@ -130,5 +141,6 @@ ${parseMarkdown(content)}
     handleNew,
     handleDownloadHtml,
     handleDownloadText,
+    handleDownloadMarkdown,
   };
 }
