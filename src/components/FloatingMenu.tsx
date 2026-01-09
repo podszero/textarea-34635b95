@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   MoreVertical,
@@ -14,6 +14,8 @@ import {
   ClipboardCopy,
   Save,
   FolderOpen,
+  Upload,
+  DatabaseBackup,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -40,6 +42,8 @@ interface FloatingMenuProps {
   onToggleTheme: () => void;
   content: string;
   hasDocuments: boolean;
+  onExportBackup: () => void;
+  onImportBackup: (file: File) => void;
 }
 
 const FloatingMenu = ({
@@ -57,9 +61,24 @@ const FloatingMenu = ({
   onToggleTheme,
   content,
   hasDocuments,
+  onExportBackup,
+  onImportBackup,
 }: FloatingMenuProps) => {
   const [copiedUrl, setCopiedUrl] = useState(false);
   const [copiedText, setCopiedText] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      onImportBackup(file);
+      e.target.value = '';
+    }
+  };
 
   // Generate clean shareable URL with compressed content
   const generateShareableUrl = () => {
@@ -282,6 +301,32 @@ const FloatingMenu = ({
               <Download className="h-4 w-4" />
               <span>Unduh TXT</span>
             </DropdownMenuItem>
+
+            <DropdownMenuSeparator className="my-1.5 sm:my-2" />
+
+            <DropdownMenuItem
+              onClick={onExportBackup}
+              className="flex items-center gap-3 py-2.5 sm:py-3 px-3 rounded-lg cursor-pointer touch-manipulation"
+            >
+              <DatabaseBackup className="h-4 w-4" />
+              <span>Ekspor Backup</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              onClick={handleImportClick}
+              className="flex items-center gap-3 py-2.5 sm:py-3 px-3 rounded-lg cursor-pointer touch-manipulation"
+            >
+              <Upload className="h-4 w-4" />
+              <span>Impor Backup</span>
+            </DropdownMenuItem>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json"
+              onChange={handleFileChange}
+              className="hidden"
+            />
 
             <DropdownMenuSeparator className="my-1.5 sm:my-2" />
 

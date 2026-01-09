@@ -264,6 +264,64 @@ const Index = () => {
     toast.success('Markdown berhasil diunduh!');
   }, [content]);
 
+  // Export all documents as JSON backup
+  const handleExportBackup = useCallback(() => {
+    if (documents.length === 0) {
+      toast.error('Tidak ada dokumen untuk diekspor');
+      return;
+    }
+
+    const backup = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      documents: documents,
+    };
+
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `catatan-backup-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success(`${documents.length} dokumen berhasil diekspor!`);
+  }, [documents]);
+
+  // Import documents from JSON backup
+  const handleImportBackup = useCallback((file: File) => {
+    const reader = new FileReader();
+    
+    reader.onload = (e) => {
+      try {
+        const text = e.target?.result as string;
+        const backup = JSON.parse(text);
+
+        if (!backup.documents || !Array.isArray(backup.documents)) {
+          toast.error('Format file backup tidak valid');
+          return;
+        }
+
+        let importedCount = 0;
+        backup.documents.forEach((doc: { content?: string }) => {
+          if (doc.content) {
+            createDocument(doc.content);
+            importedCount++;
+          }
+        });
+
+        toast.success(`${importedCount} dokumen berhasil diimpor!`);
+      } catch {
+        toast.error('Gagal membaca file backup');
+      }
+    };
+
+    reader.onerror = () => {
+      toast.error('Gagal membaca file');
+    };
+
+    reader.readAsText(file);
+  }, [createDocument]);
+
   if (!isLoaded) {
     return (
       <div className="min-h-screen min-h-[100dvh] bg-editor-bg flex items-center justify-center">
@@ -325,6 +383,8 @@ Ketik apa saja — otomatis tersimpan."
         onToggleTheme={toggleTheme}
         content={content}
         hasDocuments={documents.length > 0}
+        onExportBackup={handleExportBackup}
+        onImportBackup={handleImportBackup}
       />
 
       {/* Documents Sidebar */}
