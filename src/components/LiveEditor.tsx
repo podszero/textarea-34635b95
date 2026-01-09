@@ -34,7 +34,7 @@ const renderLine = (line: string, lineIndex: number, inCodeBlock: boolean): Reac
     const hashes = headingMatch[1];
     const content = headingMatch[2];
     return (
-      <span key={lineIndex} className="md-heading-line">
+      <span key={lineIndex}>
         <span className="md-syntax">{hashes} </span>
         <span className={`md-h${level}`}>{parseInline(content)}</span>
       </span>
