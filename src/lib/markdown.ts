@@ -53,6 +53,12 @@ export function parseMarkdown(text: string): string {
     }
   });
 
+  // Images ![alt](url) or ![alt](url "title")
+  html = html.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)/g, (_, alt, url, title) => {
+    const titleAttr = title ? ` title="${title}"` : '';
+    return `<figure class="md-image"><img src="${url}" alt="${alt}"${titleAttr} loading="lazy" />${alt ? `<figcaption>${alt}</figcaption>` : ''}</figure>`;
+  });
+
   // Inline code with special styling
   html = html.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
 
@@ -63,6 +69,9 @@ export function parseMarkdown(text: string): string {
   html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
   html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
   html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+
+  // Tables - Parse markdown tables
+  html = parseMarkdownTables(html);
 
   // Bold and italic combined
   html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
@@ -82,9 +91,9 @@ export function parseMarkdown(text: string): string {
   // Markdown links [text](url)
   html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
 
-  // Auto-link URLs (not already in href)
+  // Auto-link URLs (not already in href or src)
   html = html.replace(
-    /(?<!href=["'])(https?:\/\/[^\s<>"')\]]+)/g,
+    /(?<!href=["']|src=["'])(https?:\/\/[^\s<>"')\]]+)/g,
     '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
   );
 
@@ -120,4 +129,96 @@ export function parseMarkdown(text: string): string {
   html = html.replace(/<\/blockquote>\n<blockquote>/g, '<br>');
 
   return html;
+}
+
+// Parse markdown tables
+function parseMarkdownTables(html: string): string {
+  const lines = html.split('\n');
+  const result: string[] = [];
+  let inTable = false;
+  let tableRows: string[] = [];
+  let alignments: string[] = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    
+    // Check if line is a table row (starts and ends with |, or has | in between)
+    const isTableRow = line.includes('|') && line.match(/\|.*\|/);
+    
+    // Check if line is separator row (like |---|---|)
+    const isSeparator = line.match(/^\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)+\|?$/);
+
+    if (isTableRow && !isSeparator) {
+      if (!inTable) {
+        inTable = true;
+        tableRows = [];
+        alignments = [];
+      }
+      tableRows.push(line);
+    } else if (isSeparator && inTable && tableRows.length === 1) {
+      // Parse alignments from separator
+      alignments = line.split('|')
+        .filter(cell => cell.trim())
+        .map(cell => {
+          const trimmed = cell.trim();
+          if (trimmed.startsWith(':') && trimmed.endsWith(':')) return 'center';
+          if (trimmed.endsWith(':')) return 'right';
+          return 'left';
+        });
+    } else {
+      if (inTable && tableRows.length > 0) {
+        // Finish table and add to result
+        result.push(buildTable(tableRows, alignments));
+        inTable = false;
+        tableRows = [];
+        alignments = [];
+      }
+      result.push(lines[i]);
+    }
+  }
+
+  // Handle table at end of content
+  if (inTable && tableRows.length > 0) {
+    result.push(buildTable(tableRows, alignments));
+  }
+
+  return result.join('\n');
+}
+
+function buildTable(rows: string[], alignments: string[]): string {
+  if (rows.length === 0) return '';
+
+  let tableHtml = '<div class="table-wrapper"><table>';
+  
+  rows.forEach((row, rowIndex) => {
+    const cells = row.split('|')
+      .map(cell => cell.trim())
+      .filter((_, i, arr) => {
+        // Remove empty first/last elements from |cell|cell| format
+        if (i === 0 && arr[0] === '') return false;
+        if (i === arr.length - 1 && arr[arr.length - 1] === '') return false;
+        return true;
+      });
+
+    if (rowIndex === 0) {
+      // Header row
+      tableHtml += '<thead><tr>';
+      cells.forEach((cell, cellIndex) => {
+        const align = alignments[cellIndex] || 'left';
+        tableHtml += `<th style="text-align: ${align}">${cell}</th>`;
+      });
+      tableHtml += '</tr></thead><tbody>';
+    } else {
+      // Body rows
+      tableHtml += '<tr>';
+      cells.forEach((cell, cellIndex) => {
+        const align = alignments[cellIndex] || 'left';
+        tableHtml += `<td style="text-align: ${align}">${cell}</td>`;
+      });
+      tableHtml += '</tr>';
+    }
+  });
+
+  tableHtml += '</tbody></table></div>';
+  return tableHtml;
 }

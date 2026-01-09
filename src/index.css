@@ -518,6 +518,76 @@
     background: linear-gradient(to right, transparent, hsl(var(--primary) / 0.3), transparent);
   }
 
+  /* Tables */
+  .markdown-preview .table-wrapper {
+    @apply my-8 overflow-x-auto rounded-xl;
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 2px 8px -2px hsl(var(--foreground) / 0.08);
+  }
+
+  .markdown-preview table {
+    @apply w-full border-collapse;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.9rem;
+  }
+
+  .markdown-preview thead {
+    background: hsl(var(--muted) / 0.6);
+  }
+
+  .dark .markdown-preview thead {
+    background: hsl(30 12% 14%);
+  }
+
+  .markdown-preview th {
+    @apply px-4 py-3 font-semibold;
+    text-align: left;
+    color: hsl(var(--foreground));
+    border-bottom: 2px solid hsl(var(--primary) / 0.3);
+    white-space: nowrap;
+  }
+
+  .markdown-preview td {
+    @apply px-4 py-3;
+    border-bottom: 1px solid hsl(var(--border) / 0.6);
+    color: hsl(var(--foreground) / 0.9);
+  }
+
+  .markdown-preview tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .markdown-preview tbody tr:hover {
+    background: hsl(var(--muted) / 0.4);
+  }
+
+  .dark .markdown-preview tbody tr:hover {
+    background: hsl(30 12% 12%);
+  }
+
+  /* Images */
+  .markdown-preview .md-image {
+    @apply my-8;
+    text-align: center;
+  }
+
+  .markdown-preview .md-image img {
+    @apply max-w-full h-auto rounded-xl mx-auto;
+    box-shadow: 0 4px 20px -4px hsl(var(--foreground) / 0.15);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+
+  .dark .markdown-preview .md-image img {
+    box-shadow: 0 4px 24px -4px hsl(0 0% 0% / 0.5);
+    border-color: hsl(30 10% 20%);
+  }
+
+  .markdown-preview .md-image figcaption {
+    @apply mt-3 text-sm italic;
+    color: hsl(var(--muted-foreground));
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
   /* Strong text */
   .markdown-preview strong {
     @apply font-bold;
